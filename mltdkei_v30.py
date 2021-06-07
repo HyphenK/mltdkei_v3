@@ -936,7 +936,7 @@ if __name__ == '__main__':
         root.update()
 
     def help_open():
-        readme_url = 'https://github.com/HyphenK/mltdkei/blob/main/README.md'
+        readme_url = 'https://github.com/HyphenK/mltdkei_v3'
         webbrowser.open(readme_url, new=1)
 
     def presets(unused_option):
