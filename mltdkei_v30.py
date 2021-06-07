@@ -15,7 +15,7 @@ from multiprocessing import Process, freeze_support, Manager
 # mltdkei Module #
 import AppealCalc
 import SimulateCalc
-import UpdateHub
+import UpdateHubE
 import IdolList
 import MakeUnit
 
@@ -1077,7 +1077,7 @@ if __name__ == '__main__':
     cvUT = Frame(bcvSE)
     cvUT.place(x=370, y=100, width=180, height=50)
 
-    bnUD = Button(cvUT, text="Update DB\n& Program", command=UpdateHub.main_hub)
+    bnUD = Button(cvUT, text="Update DB", command=UpdateHubE.main_hub)
     bnUD.place(x=0, y=0, width=90, height=50)
 
     bnUF = Button(cvUT, text="Config\nIdol List", command=lambda: IdolList.main_idollist(iconext))
