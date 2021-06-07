@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 import sqlite3
 
-version = "[3.0] 21/06/05"
+version = "[3.0] 21/06/07"
 conn1 = sqlite3.connect('mltdkei_idoldata.sqlite')
 cur1 = conn1.cursor()
 
@@ -20,38 +20,49 @@ def main_idollist(iconext):
         msgbox.showinfo('Error', 'Info File is damaged or not updated.\nPlease check your file or update DB first.')
         return
 
-    uil_root = Toplevel()
+    uil_root = Tk() ##### Fix before Release #####
     uil_root.title("Idol List Editor for MLTD Deck Analyzer")
     uil_root.geometry("+60+25")
     uil_root.resizable(False, False)
 
-    ssr_princess, ssr_fairy, ssr_angel = list(), list(), list()
-    ssr_1st, ssr_2nd, ssr_3rd = list(), list(), list()
-    sr_princess, sr_fairy, sr_angel, sr_ex = list(), list(), list(), list()
-    r_princess, r_fairy, r_angel, n_all = list(), list(), list(), list()
-    anniversary = ["BRAND NEW PERFORMANCE", "UNI-ONAIR", "CHALLENGE FOR GLOW-RY DAYS"]
+    hlist = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+    whath = ['SSR-Pr', 'SSR-Fa', 'SSR-An', 'SR-Pr', 'SR-Fa', 'SR-An', 'SR-Ex',
+        'R-Pr', 'R-Fa', 'R-An', 'N-All', 'SSR-1st', 'SSR-2nd', 'SSR-3rd', 'SSR-4th']
+
+    anniversary = ["'BRAND NEW PERFORMANCE%'", "'UNI-ONAIR%'", "'CHALLENGE FOR GLOW-RY DAYS%'"]
     pbar_varp = IntVar()
 
-    listtem = cur1.execute('''select idnumber, rare, name, type from IdolDB''').fetchall()
-    for quartet in listtem:
-        if quartet[1] == "SSR+":
-            if anniversary[0] in quartet[2]: ssr_1st.append(int(quartet[0]))
-            elif anniversary[1] in quartet[2]: ssr_2nd.append(int(quartet[0]))
-            elif anniversary[2] in quartet[2]: ssr_3rd.append(int(quartet[0]))
-            elif quartet[3] == 1: ssr_princess.append(int(quartet[0]))
-            elif quartet[3] == 2: ssr_fairy.append(int(quartet[0]))
-            elif quartet[3] == 3: ssr_angel.append(int(quartet[0]))
-        elif quartet[1] == "SR+":
-            if quartet[3] == 1: sr_princess.append(int(quartet[0]))
-            elif quartet[3] == 2: sr_fairy.append(int(quartet[0]))
-            elif quartet[3] == 3: sr_angel.append(int(quartet[0]))
-            elif quartet[3] == 4: sr_ex.append(int(quartet[0]))
-        elif quartet[1] == "R+":
-            if quartet[3] == 1: r_princess.append(int(quartet[0]))
-            elif quartet[3] == 2: r_fairy.append(int(quartet[0]))
-            elif quartet[3] == 3: r_angel.append(int(quartet[0]))
-        elif quartet[1] == "N+":
-            n_all.append(int(quartet[0]))
+    hlist[0] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "SSR+" and name not like {anniversary[0]} and name not like {anniversary[1]}
+        and name not like {anniversary[2]} and type = 1''').fetchall()
+    hlist[1] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "SSR+" and name not like {anniversary[0]} and name not like {anniversary[1]}
+        and name not like {anniversary[2]} and type = 2''').fetchall()
+    hlist[2] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "SSR+" and name not like {anniversary[0]} and name not like {anniversary[1]}
+        and name not like {anniversary[2]} and type = 3''').fetchall()
+    hlist[3] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "SR+" and type = 1''').fetchall()
+    hlist[4] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "SR+" and type = 2''').fetchall()
+    hlist[5] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "SR+" and type = 3''').fetchall()
+    hlist[6] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "SR+" and type = 4''').fetchall()
+    hlist[7] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "R+" and type = 1''').fetchall()
+    hlist[8] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "R+" and type = 2''').fetchall()
+    hlist[9] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "R+" and type = 3''').fetchall()
+    hlist[10] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where rare = "N+"''').fetchall()
+    hlist[11] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where name like {anniversary[0]}''').fetchall()
+    hlist[12] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where name like {anniversary[1]}''').fetchall()
+    hlist[13] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
+        where name like {anniversary[2]}''').fetchall()
 
     uil_set_container = Frame(uil_root, width=1015, height=75, borderwidth=2, relief="groove")
     uil_set_container.grid(row=0, column=0)
@@ -68,6 +79,9 @@ def main_idollist(iconext):
     def print_gui(inputed_list):
         nonlocal uil_container
         button_write.config(state="disabled")
+        cbxhave_open.set(havevalues[0])
+        cbxrank_open.set(rankvalues[0])
+        cbxskill_open.set(skillvalues[0])
         uil_container.destroy()
         uil_container = Frame(uil_root)
         uil_canvas = Canvas(uil_container, width=995, height=505)
@@ -90,34 +104,12 @@ def main_idollist(iconext):
         lb_progressright.config(text=lenin)
         pbar_varp.set(countout)
         pbr_progress.config(maximum=lenin)
-        if inputed_list == ssr_princess: lb_opendeck.config(text="SSR-Pr")
-        elif inputed_list == ssr_fairy: lb_opendeck.config(text="SSR-Fa")
-        elif inputed_list == ssr_angel: lb_opendeck.config(text="SSR-An")
-        elif inputed_list == ssr_1st: lb_opendeck.config(text="SSR-1st")
-        elif inputed_list == ssr_2nd: lb_opendeck.config(text="SSR-2nd")
-        elif inputed_list == ssr_3rd: lb_opendeck.config(text="SSR-3rd")
-        elif inputed_list == sr_princess: lb_opendeck.config(text="SR-Pr")
-        elif inputed_list == sr_fairy: lb_opendeck.config(text="SR-Fa")
-        elif inputed_list == sr_angel: lb_opendeck.config(text="SR-An")
-        elif inputed_list == sr_ex: lb_opendeck.config(text="SR-Ex")
-        elif inputed_list == r_princess: lb_opendeck.config(text="R-Pr")
-        elif inputed_list == r_fairy: lb_opendeck.config(text="R-Fa")
-        elif inputed_list == r_angel: lb_opendeck.config(text="R-An")
-        elif inputed_list == n_all: lb_opendeck.config(text="N-All")
+
+        lb_opendeck.config(text=whath[hlist.index(inputed_list)])
         uil_root.update()
 
-        def dataprint(inputed_data, r, c):
-            def printdata(what):
-                if what == "have": inputed_data[-3] = str(havevalues.index(cbxhave.get()))
-                elif what == "rank": inputed_data[-2] = str(rankvalues.index(cbxrank.get()))
-                elif what == "skill": inputed_data[-1] = str(skillvalues.index(cbxskill.get())+1)
-                edited_data = ",".join(inputed_data)
-                if idnumber < 1064: infodata[idnumber-1] = edited_data
-                elif idnumber > 1065: infodata[idnumber-3] = edited_data
-
+        def dataprint(inputed_data, maxrank, image, r, c):
             inputed_data = inputed_data.split(',')
-            image = cur1.execute('''select photocode from PhotoCodeDB
-                where idnumber = %d''' % int(inputed_data[0])).fetchone()[0]
             idnumber = int(inputed_data[0])
             have, rank, skill = inputed_data[-3:]
             idolname = ",".join(inputed_data[2:inputed_data.index(have)])
@@ -131,29 +123,41 @@ def main_idollist(iconext):
             uil_photolabel.image = deckphoto
             uil_photolabel.grid(row=r, column=c)
 
+            def printdata(what):
+                if what == "have": inputed_data[-3] = str(havevalues.index(cbxhave.get()))
+                elif what == "rank": inputed_data[-2] = str(rankvalues.index(cbxrank.get()))
+                elif what == "skill": inputed_data[-1] = str(skillvalues.index(cbxskill.get())+1)
+                edited_data = ",".join(inputed_data)
+                if idnumber < 1064: infodata[idnumber-1] = edited_data
+                elif idnumber > 1065: infodata[idnumber-3] = edited_data
+
             cbxhave = ttk.Combobox(scrollable_frame, height=2, width=5, values=havevalues, state="readonly")
             cbxhave.grid(row=r+1, column=c)
             cbxhave.set(havevalues[int(have)])
             cbxhave.bind("<<ComboboxSelected>>", lambda unused_option: printdata("have"))
 
-            cbxrank = ttk.Combobox(scrollable_frame, height=6, width=5, values=rankvalues, state="readonly")
+            rv = ["★" + str(irv) for irv in range(5)]
+            if maxrank == 5: rv = rv + ["★5"]
+            cbxrank = ttk.Combobox(scrollable_frame, height=6, width=5, values=rv, state="readonly")
             cbxrank.grid(row=r+2, column=c)
             cbxrank.set(rankvalues[int(rank)])
             cbxrank.bind("<<ComboboxSelected>>", lambda unused_option: printdata("rank"))
 
-            cbxskill = ttk.Combobox(scrollable_frame, height=13, width=5, values=skillvalues, state="readonly")
+            sv = ["Lv" + str(isv) for isv in range(1, 11)]
+            if maxrank == 5: sv = sv + ["Lv11", "Lv12"]
+            cbxskill = ttk.Combobox(scrollable_frame, height=13, width=5, values=sv, state="readonly")
             cbxskill.grid(row=r+3, column=c)
             cbxskill.set(skillvalues[int(skill)-1])
             cbxskill.bind("<<ComboboxSelected>>", lambda unused_option: printdata("skill"))
 
-        for idnumber in inputed_list:
-            if idnumber < 1064:
-                try: data = infodata[idnumber-1]
+        for triple in inputed_list:
+            if triple[0] < 1064:
+                try: data = infodata[triple[0]-1]
                 except IndexError: break
-            elif idnumber > 1065:
-                try: data = infodata[idnumber-3]
+            elif triple[0] > 1065:
+                try: data = infodata[triple[0]-3]
                 except IndexError: break
-            dataprint(data, countrow, countcol)
+            dataprint(data, triple[1], triple[2], countrow, countcol)
             countout = countout + 1
             lb_progressleft.config(text=countout)
             pbar_varp.set(countout)
@@ -165,75 +169,77 @@ def main_idollist(iconext):
 
         def config_all():
             if len(inputed_list) == 0: return
-            for idnumber in inputed_list:
-                if idnumber < 1064:
-                    try: data = infodata[idnumber-1]
+            for triple in inputed_list:
+                if triple[0] < 1064:
+                    try: data = infodata[triple[0]-1]
                     except IndexError: break
-                elif idnumber > 1065:
-                    try: data = infodata[idnumber-3]
+                elif triple[0] > 1065:
+                    try: data = infodata[triple[0]-3]
                     except IndexError: break
                 data = data.split(",")
                 data[-3] = str(havevalues.index(cbxhave_open.get()))
                 data[-2] = str(rankvalues.index(cbxrank_open.get()))
                 data[-1] = str(skillvalues.index(cbxskill_open.get())+1)
                 edited_data = ",".join(data)
-                if idnumber < 1064: infodata[idnumber-1] = edited_data
-                elif idnumber > 1065: infodata[idnumber-3] = edited_data
+                if triple[0] < 1064: infodata[triple[0]-1] = edited_data
+                elif triple[0] > 1065: infodata[triple[0]-3] = edited_data
             print_gui(inputed_list)
 
         lb_protect.destroy()
         button_write.config(command=config_all, state="normal")
-        cbxhave_open.set(havevalues[0])
-        cbxrank_open.set(rankvalues[0])
-        cbxskill_open.set(skillvalues[0])
 
     button_save = Button(uil_set_container, text="Save", width=7, command=buttoncmd_save)
     button_save.grid(row=0, column=0, rowspan=2, sticky=N+S)
 
-    button_ssrpr = Button(uil_set_container, text="SSR-Pr", width=7, command=lambda: print_gui(ssr_princess))
-    button_ssrpr.grid(row=0, column=1)
+    class PB:
+        def place(self, no, r, c):
+            self.button = Button(uil_set_container, text=whath[no], width=7, command=lambda: print_gui(hlist[no]))
+            self.button.grid(row=r, column=c)
 
-    button_ssrfa = Button(uil_set_container, text="SSR-Fa", width=7, command=lambda: print_gui(ssr_fairy))
-    button_ssrfa.grid(row=0, column=2)
+    button_ssrpr = PB()
+    button_ssrpr.place(0, 0, 1)
 
-    button_ssran = Button(uil_set_container, text="SSR-An", width=7, command=lambda: print_gui(ssr_angel))
-    button_ssran.grid(row=0, column=3)
+    button_ssrfa = PB()
+    button_ssrfa.place(1, 0, 2)
 
-    button_ssr1st = Button(uil_set_container, text="SSR-1st", width=7, command=lambda: print_gui(ssr_1st))
-    button_ssr1st.grid(row=0, column=4)
+    button_ssran = PB()
+    button_ssran.place(2, 0, 3)
 
-    button_ssr2nd = Button(uil_set_container, text="SSR-2nd", width=7, command=lambda: print_gui(ssr_2nd))
-    button_ssr2nd.grid(row=0, column=5)
+    button_ssr1st = PB()
+    button_ssr1st.place(11, 0, 4)
 
-    button_ssr3rd = Button(uil_set_container, text="SSR-3rd", width=7, command=lambda: print_gui(ssr_3rd))
-    button_ssr3rd.grid(row=0, column=6)
+    button_ssr2nd = PB()
+    button_ssr2nd.place(12, 0, 5)
+
+    button_ssr3rd = PB()
+    button_ssr3rd.place(13, 0, 6)
 
     button_comingsoon = Button(uil_set_container, text="Coming Soon")
     button_comingsoon.grid(row=0, column=7, columnspan=2, sticky=E+W)
 
-    button_srpr = Button(uil_set_container, text="SR-Pr", width=7, command=lambda: print_gui(sr_princess))
-    button_srpr.grid(row=1, column=1)
+    button_srpr = PB()
+    button_srpr.place(3, 1, 1)
 
-    button_srfa = Button(uil_set_container, text="SR-Fa", width=7, command=lambda: print_gui(sr_fairy))
-    button_srfa.grid(row=1, column=2)
+    button_srfa = PB()
+    button_srfa.place(4, 1, 2)
 
-    button_sran = Button(uil_set_container, text="SR-An", width=7, command=lambda: print_gui(sr_angel))
-    button_sran.grid(row=1, column=3)
+    button_sran = PB()
+    button_sran.place(5, 1, 3)
 
-    button_srex = Button(uil_set_container, text="SR-Ex", width=7, command=lambda: print_gui(sr_ex))
-    button_srex.grid(row=1, column=4)
+    button_srex = PB()
+    button_srex.place(6, 1, 4)
 
-    button_rpr = Button(uil_set_container, text="R-Pr", width=7, command=lambda: print_gui(r_princess))
-    button_rpr.grid(row=1, column=5)
+    button_rpr = PB()
+    button_rpr.place(7, 1, 5)
 
-    button_rfa = Button(uil_set_container, text="R-Fa", width=7, command=lambda: print_gui(r_fairy))
-    button_rfa.grid(row=1, column=6)
+    button_rfa = PB()
+    button_rfa.place(8, 1, 6)
 
-    button_ran = Button(uil_set_container, text="R-An", width=7, command=lambda: print_gui(r_angel))
-    button_ran.grid(row=1, column=7)
+    button_ran = PB()
+    button_ran.place(9, 1, 7)
 
-    button_nall = Button(uil_set_container, text="N-All", width=7, command=lambda: print_gui(n_all))
-    button_nall.grid(row=1, column=8)
+    button_nall = PB()
+    button_nall.place(10, 1, 8)
 
     uil_progress_container = Frame(uil_set_container, width=485, height=50)
     uil_progress_container.grid(row=0, column=9, rowspan=2)
@@ -279,7 +285,7 @@ def main_idollist(iconext):
     lb_openrank = Label(uil_set_container, text="Rank")
     lb_openrank.grid(row=2, column=5, sticky=E+W)
 
-    rankvalues = ["★" + str(irv) for irv in range(0, 6)]
+    rankvalues = ["★" + str(irv) for irv in range(6)]
     cbxrank_open = ttk.Combobox(uil_set_container, height=6, width=5, values=rankvalues, state="readonly")
     cbxrank_open.grid(row=2, column=6, sticky=N+E+W+S)
     cbxrank_open.set(rankvalues[0])
