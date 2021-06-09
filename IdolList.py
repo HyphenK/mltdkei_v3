@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 import sqlite3
 
-version = "[3.0] 21/06/07"
+version = "[3.0] 21/06/09"
 conn1 = sqlite3.connect('mltdkei_idoldata.sqlite')
 cur1 = conn1.cursor()
 
@@ -20,7 +20,7 @@ def main_idollist(iconext):
         msgbox.showinfo('Error', 'Info File is damaged or not updated.\nPlease check your file or update DB first.')
         return
 
-    uil_root = Tk() ##### Fix before Release #####
+    uil_root = Toplevel()
     uil_root.title("Idol List Editor for MLTD Deck Analyzer")
     uil_root.geometry("+60+25")
     uil_root.resizable(False, False)
