@@ -131,7 +131,7 @@ def main_hub():
     lb_kind.place_all(fr_pg, 1, "＼", "Latest", "Current", "Update")
 
     def core_update():
-        readme_url = 'https://github.com/HyphenK/mltdkei/blob/main/README.md'
+        readme_url = 'https://github.com/HyphenK/mltdkei_v3'
         webbrowser.open(readme_url, new=1)
 
     lb_core = LB4()
