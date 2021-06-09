@@ -5,7 +5,7 @@ from random import randrange
 # mltdkei Module #
 from NewProgress import NewProgress
 
-version = "[3.0] 21/06/05"
+version = "[3.0] 21/06/09"
 
 def version_check():
     return version
@@ -15,7 +15,7 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
     wlist = [1, 2, 1, 1, 1, 1, 1, 2, 10]
     ideal, howmany, skdict, temp_result = inputed_ideal, inputed_zTC, dict(), list()
     clcount, clpbr, clmpbr, clfull = 0, 0, 0, len(ntcalc)
-    conn1 = sqlite3.connect('mltdkei_idoldata.sqlite')
+    conn1 = sqlite3.connect('mltdkei_idoldata_kr.sqlite')
     cur1 = conn1.cursor()
     NPG = NewProgress()
     if ideal == True:
