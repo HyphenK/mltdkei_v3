@@ -4,13 +4,13 @@ from re import findall
 # mltdkei Module #
 from NewProgress import NewProgress
 
-version = "[3.0] 21/06/05"
+version = "[3.0] 21/06/09"
 
 def version_check():
     return version
 
 def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id):
-    conn1 = sqlite3.connect('mltdkei_idoldata.sqlite')
+    conn1 = sqlite3.connect('mltdkei_idoldata_kr.sqlite')
     cur1 = conn1.cursor()
     NPG = NewProgress()
     NPG.workid(1, work_id)

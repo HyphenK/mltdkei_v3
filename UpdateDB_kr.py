@@ -8,7 +8,7 @@ from re import findall
 from bs4 import BeautifulSoup
 from time import time, sleep, strftime, localtime
 
-version = "[3.0] 21/06/08"
+version = "[3.0] 21/06/09"
 conn1 = sqlite3.connect('mltdkei_idoldata_kr.sqlite')
 cur1 = conn1.cursor()
 conn2 = sqlite3.connect('mltdkei_songdata_kr.sqlite')
@@ -81,7 +81,7 @@ def update_idoldata(cls_name):
     namedict = dict()
 
     try:
-        extract_start = int(cur1.execute('select idnumber from IdolDB').fetchone()[-4][0]) + 1
+        extract_start = int(cur1.execute('select idnumber from IdolDB').fetchall()[-4][0]) + 1
         db_exist = True
     except:
         extract_start = 1
@@ -336,7 +336,7 @@ def update_idoldata(cls_name):
         sleep(0.5)
     ilist = cur1.execute('select idnumber, rare from IdolDB').fetchall()
     for i in ilist:
-        if len(i) == 0 or int(i[0]) < txt_last: continue
+        if len(i) == 0 or int(i[0]) < txt_last or int(i[0]) not in idgroup: continue
         infodata.append(f'{i[0]},{i[1]},{namedict[int(i[0])]},0,0,1')
     infodata.append('')
     infofile = open('mltdkei_info_kr.txt', 'w', encoding='utf-8')

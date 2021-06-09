@@ -10,19 +10,19 @@ from time import time, sleep, strftime, localtime
 # mltdkei Module #
 import AppealCalc
 import SimulateCalc
-import UpdateDB_jp
+import UpdateDB_kr
 import IdolList
 import MakeUnit
 
-version = "[3.0] 21/06/05"
+version = "[3.0] 21/06/09"
 
 def main_hub():
     uhb_root = Toplevel()
     uhb_root.title("MLTD Deck Analyzer Update Hub")
 
-    matsuri_url = "https://mltd.matsurihi.me/cards/"
-    matsuri_storage = "https://storage.matsurihi.me/mltd/icon_l/"
-    github_url = "https://raw.githubusercontent.com/HyphenK/mltdkei_v3/main/"
+    matsuri_url = "https://mltd.matsurihi.me/ko/cards/"
+    matsuri_storage = "https://storage.matsurihi.me/mltd_ko/icon_l/"
+    github_url = "https://raw.githubusercontent.com/HyphenK/mltdkei_v3/main_kr/"
 
     class LB4:
         def update_check(self, t2, t3, t4):
@@ -116,7 +116,7 @@ def main_hub():
     core_ver = findall('Core Program (.+)\n', version_data)[0]
     appealcalc_ver = findall('AppealCalc (.+)\n', version_data)[0]
     simulatecalc_ver = findall('SimulateCalc (.+)\n', version_data)[0]
-    updatedb_jp_ver = findall('UpdateDB_jp (.+)\n', version_data)[0]
+    updatedb_jp_ver = findall('UpdateDB_kr (.+)\n', version_data)[0]
     idollist_ver = findall('IdolList (.+)\n', version_data)[0]
     makeunit_ver = findall('MakeUnit (.+)\n', version_data)[0]
     songdata = findall('SongData (.+)\n', version_data)[0]
@@ -160,8 +160,8 @@ def main_hub():
     lb_simulatecalc.config_button(lambda: update_code("SimulateCalc.py"))
 
     lb_updatedb = LB4()
-    lb_updatedb.place_all(fr_pg, 5, "UpdateDB_jp", updatedb_jp_ver, UpdateDB_jp.version_check(), 0)
-    lb_updatedb.config_button(lambda: update_code("UpdateDB_jp.py"))
+    lb_updatedb.place_all(fr_pg, 5, "UpdateDB_kr", updatedb_jp_ver, UpdateDB_kr.version_check(), 0)
+    lb_updatedb.config_button(lambda: update_code("UpdateDB_kr.py"))
 
     lb_idollist = LB4()
     lb_idollist.place_all(fr_pg, 6, "IdolList", idollist_ver, IdolList.version_check(), 0)
@@ -183,8 +183,8 @@ def main_hub():
     def update_music_db():
         UMDB = PbrSide()
         UMDB.config_info("Updating Music DB...")
-        download_file = "mltdkei_songdata.sqlite"
-        response = requests.get(github_url+"mltdkei_songdata.sqlite", stream=True)
+        download_file = "mltdkei_songdata_kr.sqlite"
+        response = requests.get(github_url+"mltdkei_songdata_kr.sqlite", stream=True)
         total_size_in_bytes = int(response.headers.get('content-length', 0))
         block_size = 1024*512 #0.5 MiB
         UMDB.config_pbr("0MB", f"{round(total_size_in_bytes/1024/1024, 1)}MB", total_size_in_bytes//block_size+1)
@@ -205,14 +205,14 @@ def main_hub():
     def update_card_db():
         UCDB = PbrSide()
         UCDB.config_info("Checking Core DB Updates...")
-        center = UpdateDB_jp.update_centerstorage()
-        type = UpdateDB_jp.update_typestorage()
+        center = UpdateDB_kr.update_centerstorage()
+        type = UpdateDB_kr.update_typestorage()
         if center == True or type == True:
             UCDB.config_info("Checking Core DB Updates... Update Completed.")
         else: UCDB.config_info("Checking Core DB Updates... No Updates Found.")
         sleep(0.5)
-        UCDB.config_info("Checking Main DB and mltdkei_info.txt Updates...")
-        UpdateDB_jp.update_idoldata(UCDB)
+        UCDB.config_info("Checking Main DB and mltdkei_info_kr.txt Updates...")
+        UpdateDB_kr.update_idoldata(UCDB)
 
     lb_card = LB4()
     lb_card.place_all(fr_db, 3, "Card", "Loading", "Loading", 1)
@@ -223,8 +223,8 @@ def main_hub():
 
     uhb_root.update()
 
-    file_music = strftime('%Y/%m/%d %H:%M', localtime(getmtime("mltdkei_songdata.sqlite")))
-    file_card = strftime('%Y/%m/%d %H:%M', localtime(getmtime("mltdkei_idoldata.sqlite")))
+    file_music = strftime('%Y/%m/%d %H:%M', localtime(getmtime("mltdkei_songdata_kr.sqlite")))
+    file_card = strftime('%Y/%m/%d %H:%M', localtime(getmtime("mltdkei_idoldata_kr.sqlite")))
     ingame_music = songdata
     ingame_card = findall('<span class="intl-date-dyt" data-date="[0-9]+">(.+?)</span>', urlopen(matsuri_url).read().decode('utf-8'))[0]
 

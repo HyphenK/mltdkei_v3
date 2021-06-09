@@ -4,8 +4,8 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 import sqlite3
 
-version = "[3.0] 21/06/07"
-conn1 = sqlite3.connect('mltdkei_idoldata.sqlite')
+version = "[3.0] 21/06/09"
+conn1 = sqlite3.connect('mltdkei_idoldata_kr.sqlite')
 cur1 = conn1.cursor()
 
 def version_check():
@@ -13,14 +13,14 @@ def version_check():
 
 def main_idollist(iconext):
     try:
-        infofile = open('mltdkei_info.txt', 'r', encoding='utf-8')
+        infofile = open('mltdkei_info_kr.txt', 'r', encoding='utf-8')
         infodata = infofile.read().split('\n')
         infofile.close()
     except:
         msgbox.showinfo('Error', 'Info File is damaged or not updated.\nPlease check your file or update DB first.')
         return
 
-    uil_root = Tk() ##### Fix before Release #####
+    uil_root = Toplevel()
     uil_root.title("Idol List Editor for MLTD Deck Analyzer")
     uil_root.geometry("+60+25")
     uil_root.resizable(False, False)
@@ -71,7 +71,7 @@ def main_idollist(iconext):
 
     def buttoncmd_save():
         writedata = "\n".join(infodata)
-        infofile = open('mltdkei_info.txt', 'w', encoding='utf-8')
+        infofile = open('mltdkei_info_kr.txt', 'w', encoding='utf-8')
         infofile.write(writedata)
         infofile.close()
         msgbox.showinfo("Save Complete", "Save Complete")
@@ -128,8 +128,9 @@ def main_idollist(iconext):
                 elif what == "rank": inputed_data[-2] = str(rankvalues.index(cbxrank.get()))
                 elif what == "skill": inputed_data[-1] = str(skillvalues.index(cbxskill.get())+1)
                 edited_data = ",".join(inputed_data)
-                if idnumber < 1064: infodata[idnumber-1] = edited_data
-                elif idnumber > 1065: infodata[idnumber-3] = edited_data
+                if idnumber > 9000: infodata[idnumber-9001] = edited_data
+                elif idnumber < 1064: infodata[idnumber+2] = edited_data
+                elif idnumber > 1065: infodata[idnumber] = edited_data
 
             cbxhave = ttk.Combobox(scrollable_frame, height=2, width=5, values=havevalues, state="readonly")
             cbxhave.grid(row=r+1, column=c)
@@ -151,11 +152,14 @@ def main_idollist(iconext):
             cbxskill.bind("<<ComboboxSelected>>", lambda unused_option: printdata("skill"))
 
         for triple in inputed_list:
-            if triple[0] < 1064:
-                try: data = infodata[triple[0]-1]
+            if triple[0] > 9000:
+                try: data = infodata[triple[0]-9001]
+                except IndexError: break
+            elif triple[0] < 1064:
+                try: data = infodata[triple[0]+2]
                 except IndexError: break
             elif triple[0] > 1065:
-                try: data = infodata[triple[0]-3]
+                try: data = infodata[triple[0]]
                 except IndexError: break
             dataprint(data, triple[1], triple[2], countrow, countcol)
             countout = countout + 1
@@ -170,19 +174,23 @@ def main_idollist(iconext):
         def config_all():
             if len(inputed_list) == 0: return
             for triple in inputed_list:
-                if triple[0] < 1064:
-                    try: data = infodata[triple[0]-1]
+                if triple[0] > 9000:
+                    try: data = infodata[triple[0]-9001]
+                    except IndexError: break
+                elif triple[0] < 1064:
+                    try: data = infodata[triple[0]+2]
                     except IndexError: break
                 elif triple[0] > 1065:
-                    try: data = infodata[triple[0]-3]
+                    try: data = infodata[triple[0]]
                     except IndexError: break
                 data = data.split(",")
                 data[-3] = str(havevalues.index(cbxhave_open.get()))
                 data[-2] = str(rankvalues.index(cbxrank_open.get()))
                 data[-1] = str(skillvalues.index(cbxskill_open.get())+1)
                 edited_data = ",".join(data)
-                if triple[0] < 1064: infodata[triple[0]-1] = edited_data
-                elif triple[0] > 1065: infodata[triple[0]-3] = edited_data
+                if triple[0] > 9000: infodata[triple[0]-9001] = edited_data
+                elif triple[0] < 1064: infodata[triple[0]+2] = edited_data
+                elif triple[0] > 1065: infodata[triple[0]] = edited_data
             print_gui(inputed_list)
 
         lb_protect.destroy()
