@@ -3,7 +3,7 @@ import sqlite3
 from re import findall
 from itertools import combinations
 
-version = "[3.0] 21/06/09"
+version = "[3.0] 21/06/10"
 conn1 = sqlite3.connect('mltdkei_idoldata_kr.sqlite')
 cur1 = conn1.cursor()
 

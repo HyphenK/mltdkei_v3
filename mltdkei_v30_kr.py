@@ -777,7 +777,6 @@ if __name__ == '__main__':
         global scrollable_frame1
         for widget in scrollable_frame1.winfo_children():
             widget.destroy()
-        root.update()
         reset_display()
         try: calc_result = resultdict[notebook.index(notebook.select())]
         except: return
@@ -816,9 +815,9 @@ if __name__ == '__main__':
         lp10p.change_dot(chlist[5])
         lp20p.change_dot(chlist[6])
         lp50p.change_dot(chlist[7])
-        root.update()
 
     def print_display(need_to_print, deckno):
+        reset_display()
         result = need_to_print
         lpDKdeckno.config(text=f"<Deck #{deckno+1}>")
         lpDKtotalappeal.config(text=result[2][0])
@@ -836,22 +835,6 @@ if __name__ == '__main__':
         lp20p.change_print(result[1][6][0], result[1][6][1])
         lp50p.change_print(result[1][7][0], result[1][7][1])
         print_display_dot(result[1].index(result[0]))
-        lpDKdeck0.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck1.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck2.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck3.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck4.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck5.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck6.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck7.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck8.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck9.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck10.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck11.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck12.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck13.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck14.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck15.config(image="", borderwidth=2, relief="groove")
         root.update()
         print_display_photo(lpDKdeck0, result[2][1][0][0], 73)
         print_display_photo(lpDKdeck1, result[2][1][1][0], 73)
@@ -903,7 +886,6 @@ if __name__ == '__main__':
         lpDKdeck13.config(image="", borderwidth=2, relief="groove")
         lpDKdeck14.config(image="", borderwidth=2, relief="groove")
         lpDKdeck15.config(image="", borderwidth=2, relief="groove")
-        root.update()
 
     ##### Definition for Main GUI #####
 
@@ -1138,7 +1120,6 @@ if __name__ == '__main__':
             self.f_cbxOB.config(state="readonly")
             self.f_cbxOB.set(OBvalues[data[7]])
             self.f_cbxOB.bind("<<ComboboxSelected>>", lambda unused_option: rearrange_data(number, OBvalues.index(self.f_cbxOB.get())))
-            root.update()
 
     NTframe0 = NotebookFrame()
     NTframe0.make_frame(bbcvDN, notebook, 0)
@@ -1289,7 +1270,6 @@ if __name__ == '__main__':
         def change_print(self, score, before):
             self.lpDKscore.config(text=score)
             self.lpDKbefore.config(text=before)
-            root.update()
 
         def change_dot(self, which):
             self.lpDKb.config(bg=which)
