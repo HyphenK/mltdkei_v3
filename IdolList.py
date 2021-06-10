@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 import sqlite3
 
-version = "[3.0] 21/06/09"
+version = "[3.0] 21/06/10"
 conn1 = sqlite3.connect('mltdkei_idoldata.sqlite')
 cur1 = conn1.cursor()
 

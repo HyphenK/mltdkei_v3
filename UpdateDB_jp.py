@@ -8,7 +8,7 @@ from re import findall
 from bs4 import BeautifulSoup
 from time import time, sleep, strftime, localtime
 
-version = "[3.0] 21/06/05"
+version = "[3.0] 21/06/10"
 conn1 = sqlite3.connect('mltdkei_idoldata.sqlite')
 cur1 = conn1.cursor()
 conn2 = sqlite3.connect('mltdkei_songdata.sqlite')

@@ -5,7 +5,7 @@ from random import randrange
 # mltdkei Module #
 from NewProgress import NewProgress
 
-version = "[3.0] 21/06/05"
+version = "[3.0] 21/06/10"
 
 def version_check():
     return version
@@ -87,6 +87,7 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
 
             TotalScore, NC = 0, 0
             for noteinfo in songinfo_zDI:
+                if noteinfo[2] == 8: bsalist.append(int(TotalScore))
                 w, a, NC, abstime = wlist[noteinfo[2]], 1, NC + 1, int(noteinfo[0])
                 nsk, score, combo = sklist[abstime], s*w*a, c*klist[NC]
                 Ts = score + combo + score*nsk[0] + combo*3*nsk[1] + score*nsk[2] + combo*nsk[3]
@@ -94,7 +95,6 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
                     nsk2, hold = sklist[abstime], noteinfo[4]/8/noteinfo[3]*2*s
                     Ts = Ts + hold + hold*nsk2[0] + hold*nsk2[2]
                 TotalScore = round(TotalScore + Ts, 2)
-                if noteinfo[2] == 8: bsalist.append(int(TotalScore))
 
             ayzlist.append(int(TotalScore))
             hmcount = hmcount + 1
