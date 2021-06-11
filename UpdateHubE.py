@@ -10,7 +10,7 @@ from time import time, sleep, strftime, localtime
 # mltdkei Module #
 import UpdateDB_kr
 
-version = "[3.0] 21/06/09"
+version = "[3.0] 21/06/11"
 
 def main_hub():
     uhb_root = Toplevel()
