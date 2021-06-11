@@ -40,9 +40,9 @@ def multi_calculator(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_z
     return
 
 if __name__ == '__main__':
+    freeze_support()
     root = Tk()
     root.title("MLTD Deck Analyzer 3.0")
-    freeze_support()
 
     matsuri_url = "https://mltd.matsurihi.me/cards/"
     matsuri_storage = "https://storage.matsurihi.me/mltd/icon_l/"
@@ -111,11 +111,18 @@ if __name__ == '__main__':
         cbnssr.set(1)
 
         def save_thing(inputed, fromwhere):
-            inputed = int(fromwhere.get())
+            global zCB, zIC, zSC, zTC
+            if inputed == "zCB": zCB = int(fromwhere.get())
+            if inputed == "zIC": zIC = int(fromwhere.get())
+            if inputed == "zSC": zSC = int(fromwhere.get())
+            if inputed == "zTC": zTC = int(fromwhere.get())
             cbxPS.set("Manual")
 
         def save_zA(inputed, fromwhere, whereget):
-            inputed = fromwhere.index(whereget.get())
+            global zAH, zAR, zAS
+            if inputed == "zAH": zAH = fromwhere.index(whereget.get())
+            if inputed == "zAR": zAR = fromwhere.index(whereget.get())
+            if inputed == "zAS": zAS = fromwhere.index(whereget.get())
             cbxPS.set("Manual")
 
         def save_zSL1(unused_option):
@@ -295,29 +302,29 @@ if __name__ == '__main__':
         txTC = Label(cv_extu, text="Time of Calc")
         txTC.grid(row=0, column=3, sticky=E+W)
 
-        CBvalues = [5*i for i in range(2, 16)]
+        CBvalues = [5*i for i in range(2, 11)]
         cbxCB = ttk.Combobox(cv_extu, width=17, height=9, values=CBvalues, state="readonly")
         cbxCB.grid(row=1, column=0)
         cbxCB.set(zCB)
-        cbxCB.bind("<<ComboboxSelected>>", lambda unused_option: save_thing(zCB, CBvalues))
+        cbxCB.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zCB", cbxCB))
 
         ICvalues = [500*i for i in range(1, 21)]
         cbxIC = ttk.Combobox(cv_extu, width=17, height=10, values=ICvalues, state="readonly")
         cbxIC.grid(row=1, column=1)
         cbxIC.set(zIC)
-        cbxIC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing(zIC, ICvalues))
+        cbxIC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zIC", cbxIC))
 
         SCvalues = [5*i for i in range(2, 21)]
         cbxSC = ttk.Combobox(cv_extu, width=17, height=10, values=SCvalues, state="readonly")
         cbxSC.grid(row=1, column=2)
         cbxSC.set(zSC)
-        cbxSC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing(zSC, SCvalues))
+        cbxSC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zSC", cbxSC))
 
         TCvalues = [500*i for i in range(1, 11)]
         cbxTC = ttk.Combobox(cv_extu, width=17, height=10, values=TCvalues, state="readonly")
         cbxTC.grid(row=1, column=3)
         cbxTC.set(zTC)
-        cbxTC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing(zTC, TCvalues))
+        cbxTC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zTC", cbxTC))
 
         lb_AH = Label(cv_extu, text="Calc With All Idol")
         lb_AH.grid(row=2, column=0, sticky=E+W)
@@ -335,19 +342,19 @@ if __name__ == '__main__':
         cbx_AH = ttk.Combobox(cv_extu, width=17, height=2, values=AHvalues, state="readonly")
         cbx_AH.grid(row=3, column=0)
         cbx_AH.set(AHvalues[zAH])
-        cbx_AH.bind("<<ComboboxSelected>>", lambda unused_option: save_zA(zAH, AHvalues, cbx_AH))
+        cbx_AH.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAH", AHvalues, cbx_AH))
 
         ARvalues = ["Default", "★0", "★MAX"]
         cbx_AR = ttk.Combobox(cv_extu, width=17, height=3, values=ARvalues, state="readonly")
         cbx_AR.grid(row=3, column=1)
         cbx_AR.set(ARvalues[zAR])
-        cbx_AR.bind("<<ComboboxSelected>>", lambda unused_option: save_zA(zAR, ARvalues, cbx_AR))
+        cbx_AR.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAR", ARvalues, cbx_AR))
 
         ASvalues = ["Default", "Lv1", "LvMAX"]
         cbx_AS = ttk.Combobox(cv_extu, width=17, height=3, values=ASvalues, state="readonly")
         cbx_AS.grid(row=3, column=2)
         cbx_AS.set(ASvalues[zAS])
-        cbx_AS.bind("<<ComboboxSelected>>", lambda unused_option: save_zA(zAS, ASvalues, cbx_AS))
+        cbx_AS.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAS", ASvalues, cbx_AS))
 
         SLvalues = ["Disable", "Enable"]
         cbx_SL = ttk.Combobox(cv_extu, width=17, height=2, values=SLvalues, state="readonly")
@@ -481,8 +488,8 @@ if __name__ == '__main__':
         except ValueError: # zST Error
             open_setting()
             cbxSN.config(state="disabled")
-            msgbox.showwarning("Song Type Error", "Song Type is not selected.")
             root.update()
+            msgbox.showwarning("Song Type Error", "Song Type is not selected.")
             return
         except TypeError: # zSN Error
             open_setting()

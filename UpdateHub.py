@@ -14,7 +14,7 @@ import UpdateDB_jp
 import IdolList
 import MakeUnit
 
-version = "[3.0] 21/06/10"
+version = "[3.0] 21/06/11"
 
 def main_hub():
     uhb_root = Toplevel()
