@@ -1,9 +1,8 @@
 # Python Module #
 import sqlite3
-from re import findall
 from itertools import combinations
 
-version = "[3.0] 21/06/10"
+version = "[3.1] 21/06/29"
 conn1 = sqlite3.connect('mltdkei_idoldata_kr.sqlite')
 cur1 = conn1.cursor()
 

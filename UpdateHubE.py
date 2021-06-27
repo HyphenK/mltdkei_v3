@@ -6,13 +6,9 @@ import webbrowser
 from re import findall
 from os.path import getmtime
 from urllib.request import urlopen
-from time import sleep, strftime, localtime
+from time import time, sleep, strftime, localtime
 # mltdkei Module #
-import AppealCalc
-import SimulateCalc
 import UpdateDB_kr
-import IdolList
-import MakeUnit
 
 version = "[3.1] 21/06/29"
 
@@ -62,10 +58,6 @@ def main_hub():
 
         def config_button(self, cmd):
             self.btn_U.config(command=cmd)
-
-        def oc_button(self, cmd):
-            if cmd == 1: self.btn_U.config(state="normal")
-            elif cmd == 2: self.btn_U.config(state="disabled")
 
     class PbrSide:
         def __init__(self):
@@ -117,74 +109,7 @@ def main_hub():
             uhb_root.update()
 
     version_data = urlopen(github_url+"version_check").read().decode('utf-8')
-    core_ver = findall('Core Program (.+)\n', version_data)[0]
-    appealcalc_ver = findall('AppealCalc (.+)\n', version_data)[0]
-    simulatecalc_ver = findall('SimulateCalc (.+)\n', version_data)[0]
-    updatedb_jp_ver = findall('UpdateDB_kr (.+)\n', version_data)[0]
-    idollist_ver = findall('IdolList (.+)\n', version_data)[0]
-    makeunit_ver = findall('MakeUnit (.+)\n', version_data)[0]
     songdata = findall('SongData (.+)\n', version_data)[0]
-
-    fr_pg = Frame(uhb_root)
-    fr_pg.grid(row=0, column=0)
-
-    lb_pg = Label(fr_pg, text="<Program Update>", borderwidth=2, relief="groove")
-    lb_pg.grid(row=0, column=0, columnspan=5, sticky=E+W, ipady=3)
-
-    lb_kind = LB4()
-    lb_kind.place_all(fr_pg, 1, "＼", "Latest", "Current", "Update")
-
-    def core_update():
-        readme_url = 'https://github.com/HyphenK/mltdkei_v3'
-        webbrowser.open(readme_url, new=1)
-
-    lb_core = LB4()
-    lb_core.place_all(fr_pg, 2, "Core Program", core_ver, version, 0)
-    lb_core.config_button(core_update)
-
-    def oc_button(i):
-        lb_appealcalc.oc_button(i)
-        lb_simulatecalc.oc_button(i)
-        lb_updatedb.oc_button(i)
-        lb_idollist.oc_button(i)
-        lb_makeunit.oc_button(i)
-        lb_music.oc_button(i)
-        lb_card.oc_button(i)
-        uhb_root.update()
-
-    def update_code(code_name):
-        oc_button(2)
-        UCD = PbrSide()
-        UCD.config_info(f"Updating {code_name}...")
-        download_file = code_name
-        response = requests.get(github_url+code_name)
-        total_size = int(len(response.content))
-        UCD.config_pbr("0kB", f"{round(total_size/1024, 1)}kB", 1)
-        with open(download_file, 'wb') as file:
-            file.write(response.content)
-            UCD.update_pbr(f"{round(total_size/1024, 1)}kB", 1)
-        UCD.config_info(f"Updating {code_name}... Complete.")
-        oc_button(1)
-
-    lb_appealcalc = LB4()
-    lb_appealcalc.place_all(fr_pg, 3, "AppealCalc", appealcalc_ver, AppealCalc.version_check(), 0)
-    lb_appealcalc.config_button(lambda: update_code("AppealCalc.py"))
-
-    lb_simulatecalc = LB4()
-    lb_simulatecalc.place_all(fr_pg, 4, "SimulateCalc", simulatecalc_ver, SimulateCalc.version_check(), 0)
-    lb_simulatecalc.config_button(lambda: update_code("SimulateCalc.py"))
-
-    lb_updatedb = LB4()
-    lb_updatedb.place_all(fr_pg, 5, "UpdateDB_kr", updatedb_jp_ver, UpdateDB_kr.version_check(), 0)
-    lb_updatedb.config_button(lambda: update_code("UpdateDB_kr.py"))
-
-    lb_idollist = LB4()
-    lb_idollist.place_all(fr_pg, 6, "IdolList", idollist_ver, IdolList.version_check(), 0)
-    lb_idollist.config_button(lambda: update_code("IdolList.py"))
-
-    lb_makeunit = LB4()
-    lb_makeunit.place_all(fr_pg, 7, "MakeUnit", makeunit_ver, MakeUnit.version_check(), 0)
-    lb_makeunit.config_button(lambda: update_code("MakeUnit.py"))
 
     fr_db = Frame(uhb_root)
     fr_db.grid(row=1, column=0)
@@ -196,7 +121,6 @@ def main_hub():
     lb_kind.place_all(fr_db, 1, "＼", "In-Game", "File", "Update")
 
     def update_music_db():
-        oc_button(2)
         UMDB = PbrSide()
         UMDB.config_info("Updating Music DB...")
         download_file = "mltdkei_songdata_kr.sqlite"
@@ -213,14 +137,12 @@ def main_hub():
         if total_size_in_bytes != 0 and vard != total_size_in_bytes//block_size+1:
             UMDB.config_info("Updating Music DB... ERROR. Please Try Again.")
         else: UMDB.config_info("Updating Music DB... Complete.")
-        oc_button(1)
 
     lb_music = LB4()
     lb_music.place_all(fr_db, 2, "Music", "Loading", "Loading", 1)
     lb_music.config_button(update_music_db)
 
     def update_card_db():
-        oc_button(2)
         UCDB = PbrSide()
         UCDB.config_info("Checking Core DB Updates...")
         center = UpdateDB_kr.update_centerstorage()
@@ -231,7 +153,6 @@ def main_hub():
         sleep(0.5)
         UCDB.config_info("Checking Main DB and mltdkei_info_kr.txt Updates...")
         UpdateDB_kr.update_idoldata(UCDB)
-        oc_button(1)
 
     lb_card = LB4()
     lb_card.place_all(fr_db, 3, "Card", "Loading", "Loading", 1)

@@ -4,7 +4,7 @@ from re import findall
 # mltdkei Module #
 from NewProgress import NewProgress
 
-version = "[3.0] 21/06/10"
+version = "[3.1] 21/06/29"
 
 def version_check():
     return version
