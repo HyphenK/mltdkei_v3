@@ -6,7 +6,7 @@ import webbrowser
 from re import findall
 from urllib.request import urlopen
 
-version = "[3.0] 21/06/09"
+version = "[3.1] 21/06/29"
 
 uhb_root = Tk()
 uhb_root.title("MLTD Deck Analyzer EXE version Update Tool")
@@ -119,7 +119,7 @@ def update_exe():
     UMDB = PbrSide()
     UMDB.config_info("Updating EXE file...")
     download_file = "mltdkei_v30E_kr.exe"
-    response = requests.get(github_url_exe+"mltdkei_v30E_kr.exe", stream=True)
+    response = requests.get(github_url_exe+"mltdkei_v31E_kr.exe", stream=True)
     total_size_in_bytes = int(response.headers.get('content-length', 0))
     block_size = 1024*512 #0.5 MiB
     UMDB.config_pbr("0MB", f"{round(total_size_in_bytes/1024/1024, 1)}MB", total_size_in_bytes//block_size+1)
