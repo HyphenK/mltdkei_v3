@@ -3,7 +3,7 @@ import sqlite3
 from random import randrange
 # mltdkei Module #
 from NewProgress import NewProgress
-# SimulateCalc for ver.3.95 21/07/02
+# SimulateCalc for above ver.4.0 21/07/02
 
 def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
     ideal, howmany, skdict, temp_result, hold_dict = inputed_ideal, inputed_zTC, dict(), list(), dict()
@@ -65,6 +65,7 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
             if hmcount >= howmany: break
             effectnp, TSlist = [[0, 0, 0, 0] for i in range(runtime)], list()
             for idol in skillset:
+                if idol[1] == 34: continue
                 runcount, gaptime, activetime, actpercent, sv, cv = 0, idol[3], idol[5], idol[4], round(idol[6]/100, 2), round(idol[7]/100, 2)
                 while runcount < runtime and activetime != 0:
                     runcount += gaptime
@@ -77,6 +78,17 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
                                 else:
                                     if effectnp[i][0] < sv: effectnp[i][0] = sv
                                     if effectnp[i][1] < cv: effectnp[i][1] = cv
+                            except: break
+            for idol in skillset:
+                if idol[1] != 34: continue
+                runcount, gaptime, activetime, actpercent, sv, cv = 0, idol[3], idol[5], idol[4], round(idol[6]/100, 2), round(idol[7]/100, 2)
+                while runcount < runtime and activetime != 0:
+                    runcount += gaptime
+                    if ideal == True or actpercent >= randrange(1, 101):
+                        for i in range(runcount, runcount+activetime):
+                            try:
+                                if effectnp[i][0] != 0: effectnp[i][0] += sv
+                                if effectnp[i][1] != 0: effectnp[i][1] += cv
                             except: break
 
             for noteinfo in songinfo_zDI:
