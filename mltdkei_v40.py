@@ -18,7 +18,7 @@ import SimulateCalc
 import UpdateHub
 import IdolList
 import MakeUnit
-# mltdkei_mainframe for ver.4.0 21/07/02
+# mltdkei_mainframe for ver.4.1 21/07/07
 
 def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name):
     temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name)
@@ -38,7 +38,9 @@ def multi_calculator(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_z
 def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     freeze_support()
     root = Tk()
-    root.title("MLTD Deck Analyzer 4.0")
+    root.title("MLTD Deck Analyzer 4.1")
+    root.geometry("+80+25")
+    root.resizable(False, False)
 
     conn1 = sqlite3.connect(IDB_name)
     cur1 = conn1.cursor()
@@ -78,7 +80,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     ##### Definition for Extra Setting Window #####
 
     zCB, zIC, zSC, zTC = 20, 2000, 30, 1000
-    zSL1, zSL2, zAH, zAR, zAS = 0, 0, 0, 0, 0
+    zSL1, zSL2, zAH, zAR, zAS, zUM = 0, 0, 0, 0, 0, 1
 
     def extra_setting():
         try:
@@ -90,7 +92,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             return
         ext_root = Toplevel()
         ext_root.title("MLTD Deck Analyzer Advanced Setting")
-        ext_root.geometry("+60+25")
+        ext_root.geometry(f"+{80+main_width+1}+25")
         ext_root.resizable(False, False)
 
         total_all = dict()
@@ -118,7 +120,8 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             cbxPS.set("Manual")
 
         def save_zA(inputed, fromwhere, whereget):
-            nonlocal zAH, zAR, zAS
+            nonlocal zUM, zAH, zAR, zAS
+            if inputed == "zUM": zUM = fromwhere.index(whereget.get())
             if inputed == "zAH": zAH = fromwhere.index(whereget.get())
             if inputed == "zAR": zAR = fromwhere.index(whereget.get())
             if inputed == "zAS": zAS = fromwhere.index(whereget.get())
@@ -289,75 +292,84 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         cv_extu = Label(ext_root, borderwidth=2, relief="groove")
         cv_extu.grid(row=0, column=0)
 
-        txCB = Label(cv_extu, text="Combination")
+        txCB = Label(cv_extu, text=" Combination ")
         txCB.grid(row=0, column=0, sticky=E+W)
 
-        txIC = Label(cv_extu, text="Ideal Calc")
-        txIC.grid(row=0, column=1, sticky=E+W)
-
-        txSC = Label(cv_extu, text="Score Calc")
-        txSC.grid(row=0, column=2, sticky=E+W)
-
-        txTC = Label(cv_extu, text="Time of Calc")
-        txTC.grid(row=0, column=3, sticky=E+W)
-
-        CBvalues = [5*i for i in range(2, 11)]
-        cbxCB = ttk.Combobox(cv_extu, width=17, height=9, values=CBvalues, state="readonly")
-        cbxCB.grid(row=1, column=0)
+        CBvalues = [5*i for i in range(2, 16)]
+        cbxCB = ttk.Combobox(cv_extu, width=8, height=10, values=CBvalues, state="readonly")
+        cbxCB.grid(row=0, column=1)
         cbxCB.set(zCB)
         cbxCB.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zCB", cbxCB))
 
-        ICvalues = [500*i for i in range(1, 21)]
-        cbxIC = ttk.Combobox(cv_extu, width=17, height=10, values=ICvalues, state="readonly")
+        txIC = Label(cv_extu, text="Ideal Calc")
+        txIC.grid(row=1, column=0, sticky=E+W)
+
+        ICvalues = [1000*i for i in range(1, 21)]
+        cbxIC = ttk.Combobox(cv_extu, width=8, height=10, values=ICvalues, state="readonly")
         cbxIC.grid(row=1, column=1)
         cbxIC.set(zIC)
         cbxIC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zIC", cbxIC))
 
+        txSC = Label(cv_extu, text="Score Calc")
+        txSC.grid(row=2, column=0, sticky=E+W)
+
         SCvalues = [5*i for i in range(2, 21)]
-        cbxSC = ttk.Combobox(cv_extu, width=17, height=10, values=SCvalues, state="readonly")
-        cbxSC.grid(row=1, column=2)
+        cbxSC = ttk.Combobox(cv_extu, width=8, height=10, values=SCvalues, state="readonly")
+        cbxSC.grid(row=2, column=1)
         cbxSC.set(zSC)
         cbxSC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zSC", cbxSC))
 
-        TCvalues = [500*i for i in range(1, 11)]
-        cbxTC = ttk.Combobox(cv_extu, width=17, height=10, values=TCvalues, state="readonly")
-        cbxTC.grid(row=1, column=3)
+        txTC = Label(cv_extu, text="Time of Calc")
+        txTC.grid(row=0, column=2, sticky=E+W)
+
+        TCvalues = [1000*i for i in range(1, 21)]
+        cbxTC = ttk.Combobox(cv_extu, width=8, height=10, values=TCvalues, state="readonly")
+        cbxTC.grid(row=0, column=3)
         cbxTC.set(zTC)
         cbxTC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zTC", cbxTC))
 
+        lb_UM = Label(cv_extu, text=" Unit Making Mode ")
+        lb_UM.grid(row=1, column=2, sticky=E+W)
+
+        UMvalues = ["Legacy", "Beta"]
+        cbx_UM = ttk.Combobox(cv_extu, width=8, height=2, values=UMvalues, state="readonly")
+        cbx_UM.grid(row=1, column=3)
+        cbx_UM.set(UMvalues[zUM])
+        cbx_UM.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zUM", UMvalues, cbx_UM))
+
         lb_AH = Label(cv_extu, text="Calc With All Idol")
-        lb_AH.grid(row=2, column=0, sticky=E+W)
-
-        lb_AR = Label(cv_extu, text="Set Star Rank as")
-        lb_AR.grid(row=2, column=1, sticky=E+W)
-
-        lb_AS = Label(cv_extu, text="Set Skill Level as")
-        lb_AS.grid(row=2, column=2, sticky=E+W)
-
-        lb_SL = Label(cv_extu, text="Manual Leader Select")
-        lb_SL.grid(row=2, column=3, sticky=E+W)
+        lb_AH.grid(row=2, column=2, sticky=E+W)
 
         AHvalues = ["Disable", "Enable"]
-        cbx_AH = ttk.Combobox(cv_extu, width=17, height=2, values=AHvalues, state="readonly")
-        cbx_AH.grid(row=3, column=0)
+        cbx_AH = ttk.Combobox(cv_extu, width=8, height=2, values=AHvalues, state="readonly")
+        cbx_AH.grid(row=2, column=3)
         cbx_AH.set(AHvalues[zAH])
         cbx_AH.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAH", AHvalues, cbx_AH))
 
+        lb_AR = Label(cv_extu, text="Set Star Rank as")
+        lb_AR.grid(row=0, column=4, sticky=E+W)
+
         ARvalues = ["Default", "★0", "★MAX"]
-        cbx_AR = ttk.Combobox(cv_extu, width=17, height=3, values=ARvalues, state="readonly")
-        cbx_AR.grid(row=3, column=1)
+        cbx_AR = ttk.Combobox(cv_extu, width=8, height=3, values=ARvalues, state="readonly")
+        cbx_AR.grid(row=0, column=5)
         cbx_AR.set(ARvalues[zAR])
         cbx_AR.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAR", ARvalues, cbx_AR))
 
+        lb_AS = Label(cv_extu, text="Set Skill Level as")
+        lb_AS.grid(row=1, column=4, sticky=E+W)
+
         ASvalues = ["Default", "Lv1", "LvMAX"]
-        cbx_AS = ttk.Combobox(cv_extu, width=17, height=3, values=ASvalues, state="readonly")
-        cbx_AS.grid(row=3, column=2)
+        cbx_AS = ttk.Combobox(cv_extu, width=8, height=3, values=ASvalues, state="readonly")
+        cbx_AS.grid(row=1, column=5)
         cbx_AS.set(ASvalues[zAS])
         cbx_AS.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAS", ASvalues, cbx_AS))
 
+        lb_SL = Label(cv_extu, text=" Manual Leader Select ")
+        lb_SL.grid(row=2, column=4, sticky=E+W)
+
         SLvalues = ["Disable", "Enable"]
-        cbx_SL = ttk.Combobox(cv_extu, width=17, height=2, values=SLvalues, state="readonly")
-        cbx_SL.grid(row=3, column=3)
+        cbx_SL = ttk.Combobox(cv_extu, width=8, height=2, values=SLvalues, state="readonly")
+        cbx_SL.grid(row=2, column=5)
         cbx_SL.set(SLvalues[zSL1])
         cbx_SL.bind("<<ComboboxSelected>>", save_zSL1)
 
@@ -501,13 +513,13 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         zDM = DMvalues.index(cbxDM.get())
         zDT = DTvalues.index(cbxDT.get())
         zOB = OBvalues.index(cbxOB.get())
-        nonlocal zCB, zIC, zSC, zTC, zSL1, zSL2, zAH, zAR, zAS
+        nonlocal zCB, zIC, zSC, zTC, zSL1, zSL2, zAH, zAR, zAS, zUM
 
         if zDI == 6 and zSN != 124:
             open_setting()
             msgbox.showwarning("Difficulty Error", "This difficulty is not compatible with the selected song.")
             return
-        if zCB > 40 or zSC > 100 or zTC > 3000:
+        if (zUM == 0 and zCB > 30) or (zUM == 1 and zCB > 50) or zSC > 100 or zTC > 5000:
             response = msgbox.askokcancel("Warning",
                 "Proceeding with this setting can be time consuming.\nDo you still want to proceed?")
             if response == 1:
@@ -587,11 +599,11 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             temp_splist.append(hidol)
         temp_splist.sort(reverse=True)
 
-        tclist = MakeUnit.generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name)
+        tclist = MakeUnit.generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name, zUM)
 
         if len(tclist) == 0:
             open_setting()
-            msgbox.showinfo('Error', '''Analyzer can't make any deck under this option.\nPlease check your file or update Idol List first.''')
+            msgbox.showinfo('Error', '''Analyzer can't make any deck under this option.\nPlease check your Idol List or use higher combination / legacy deck making option.''')
             return
 
         process_make = process_count//2
@@ -937,7 +949,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             zCB, zIC, zSC, zTC = 20, 2000, 30, 1000
             zAH, zAR, zAS = 0, 0, 0
         elif howto == PSvalues[1]:
-            zCB, zIC, zSC, zTC = 10, 500, 10, 500
+            zCB, zIC, zSC, zTC = 10, 1000, 10, 1000
             zAH, zAR, zAS = 0, 0, 0
         elif howto == PSvalues[2]:
             zCB, zIC, zSC, zTC = 30, 5000, 50, 2000
@@ -1319,7 +1331,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     lp50p = PrintScore()
     lp50p.place_first(cvDKd, "50%", 225, 80)
 
-    version = "4.0"
+    version = "4.1"
     versioncheck = urlopen(github_url+"version_check").read().decode('utf-8')
     versioncheck = findall('Version (.+)\n', versioncheck)[0]
     if version != versioncheck: response = msgbox.askyesno("Update Avaliable",
@@ -1330,4 +1342,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     except:
         pass
 
+    root.update()
+    main_width = root.winfo_width()
+    print(main_width)
     root.mainloop()

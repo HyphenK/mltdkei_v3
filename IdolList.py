@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 import sqlite3
-# IdolList for above ver.3.95 21/07/02
+# IdolList for above ver.4.1 21/07/07
 
 def main_idollist(iconext, IDB_name, info_name):
     conn1 = sqlite3.connect(IDB_name)
@@ -18,7 +18,7 @@ def main_idollist(iconext, IDB_name, info_name):
 
     uil_root = Toplevel()
     uil_root.title("Idol List Editor for MLTD Deck Analyzer")
-    uil_root.geometry("+60+25")
+    uil_root.geometry("+80+25")
     uil_root.resizable(False, False)
 
     hlist = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
@@ -29,14 +29,11 @@ def main_idollist(iconext, IDB_name, info_name):
     pbar_varp = IntVar()
 
     hlist[0] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
-        where rare = "SSR+" and name not like {anniversary[0]} and name not like {anniversary[1]}
-        and name not like {anniversary[2]} and name not like {anniversary[3]} and type = 1''').fetchall()
+        natural inner join idoldb_sub where kind < 4 and type = 1''').fetchall()
     hlist[1] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
-        where rare = "SSR+" and name not like {anniversary[0]} and name not like {anniversary[1]}
-        and name not like {anniversary[2]} and name not like {anniversary[3]} and type = 2''').fetchall()
+        natural inner join idoldb_sub where kind < 4 and type = 2''').fetchall()
     hlist[2] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
-        where rare = "SSR+" and name not like {anniversary[0]} and name not like {anniversary[1]}
-        and name not like {anniversary[2]} and name not like {anniversary[3]} and type = 3''').fetchall()
+        natural inner join idoldb_sub where kind < 4 and type = 3''').fetchall()
     hlist[3] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
         where rare = "SR+" and type = 1''').fetchall()
     hlist[4] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
@@ -54,13 +51,13 @@ def main_idollist(iconext, IDB_name, info_name):
     hlist[10] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
         where rare = "N+"''').fetchall()
     hlist[11] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
-        where name like {anniversary[0]}''').fetchall()
+        natural inner join idoldb_sub where kind = 9 and name like {anniversary[0]}''').fetchall()
     hlist[12] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
-        where name like {anniversary[1]}''').fetchall()
+        natural inner join idoldb_sub where kind = 9 and name like {anniversary[1]}''').fetchall()
     hlist[13] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
-        where name like {anniversary[2]}''').fetchall()
+        natural inner join idoldb_sub where kind = 9 and name like {anniversary[2]}''').fetchall()
     hlist[14] = cur1.execute(f'''select idnumber, maxrank, photocode from idoldb natural inner join photocodedb
-        where name like {anniversary[3]}''').fetchall()
+        natural inner join idoldb_sub where kind = 9 and name like {anniversary[3]}''').fetchall()
 
     uil_set_container = Frame(uil_root, width=1015, height=75, borderwidth=2, relief="groove")
     uil_set_container.grid(row=0, column=0)
