@@ -1,7 +1,7 @@
 # Python Module #
 import sqlite3
 from itertools import combinations
-# MakeUnit for above ver.4.1 21/07/07
+# MakeUnit for above ver.4.11 21/07/12
 
 def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name, beta_enable):
     tclist = list()
@@ -10,13 +10,14 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
     slso = [[231, 222, 213, "prvo"], [234, 225, 216, "prda"], [237, 228, 219, "prvi"],
             [331, 322, 313, "favo"], [334, 325, 316, "fada"], [337, 328, 319, "favi"],
             [431, 422, 413, "anvo"], [434, 425, 416, "anvo"], [437, 428, 419, "anvo"]]
-    ttonly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where 121 <= centerid and centerid <= 129')]
-    pronly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where 221 <= centerid and centerid <= 229')]
-    faonly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where 321 <= centerid and centerid <= 329')]
-    anonly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where 421 <= centerid and centerid <= 429')]
+    ttonly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where centerid between 121 and 129')]
+    pronly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where centerid between 221 and 229')]
+    faonly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where centerid between 321 and 329')]
+    anonly = [str(i[0]) for i in cur1.execute('select idnumber from centerdb where centerid between 421 and 429')]
     skilldict = dict()
-    for hidol in hlall:
-        skilldict[hidol[1]] = cur1.execute(f'select skillid from skilldb where idnumber = {hidol[1]}').fetchone()[0]
+    skill_ext = cur1.execute('select idnumber, skillid from skilldb').fetchall()
+    for idnumber, skillid in skill_ext:
+        skilldict[str(idnumber)] = skillid
 
     def set_leader(inputed_list, mode):
         leaderlist, leader = list(), list()
@@ -140,9 +141,9 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
             if zDT == 0 or zDT == 2: tclist = tclist + make_cunit(select_leader(7), hlan)
             if zDT == 0 or zDT == 3: tclist = tclist + make_cunit(select_leader(8), hlan)
         if zDM == 0 or zDM == 2 or zDM == 9:
-            ll3tvo = cur1.execute('select idnumber from centerdb where 121 <= centerid and centerid <= 123').fetchall()
-            ll3tda = cur1.execute('select idnumber from centerdb where 124 <= centerid and centerid <= 126').fetchall()
-            ll3tvi = cur1.execute('select idnumber from centerdb where 127 <= centerid and centerid <= 129').fetchall()
+            ll3tvo = cur1.execute('select idnumber from centerdb where centerid between 121 and 123').fetchall()
+            ll3tda = cur1.execute('select idnumber from centerdb where centerid between 124 and 126').fetchall()
+            ll3tvi = cur1.execute('select idnumber from centerdb where centerid between 127 and 129').fetchall()
             if zDT == 0 or zDT == 1: tclist = tclist + make_cunit(set_leader(ll3tvo, 1), hlall)
             if zDT == 0 or zDT == 2: tclist = tclist + make_cunit(set_leader(ll3tda, 1), hlall)
             if zDT == 0 or zDT == 3: tclist = tclist + make_cunit(set_leader(ll3tvi, 1), hlall)

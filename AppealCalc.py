@@ -3,7 +3,7 @@ import sqlite3
 from re import findall
 # mltdkei Module #
 from NewProgress import NewProgress
-# AppealCalc for above ver.3.95 21/07/02
+# AppealCalc for above ver.4.11 21/07/12
 
 def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
     conn1 = sqlite3.connect(IDB_name)
@@ -26,7 +26,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
     canvo = [111, 407, 408, 409, 411, 412, 413, 421, 422, 431] + c3tnone
     canda = [111, 407, 408, 409, 414, 415, 416, 424, 425, 434] + c3tnone
     canvi = [111, 407, 408, 409, 417, 418, 419, 427, 428, 437] + c3tnone
-    c3tall = [121, 122, 124, 125, 127, 128]
+    c3tvo = [121, 122]
+    c3tda = [124, 125]
+    c3tvi = [127, 128]
     lcdict, adict, CNFRdict = dict(), dict(), dict()
     alista = ("prvo", "prda", "prvi", "favo", "fada", "favi", "anvo", "anda", "anvi")
     alistb = (0, "prso", "faso", "anso")
@@ -53,6 +55,25 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
             adict[codea] = idoldata_full
         friend_list.append(idoldata_full)
 
+    def extract_friend_c3t(lcid, cid_list):
+        try:
+            idoldata_full = adict[str(lcid)]
+        except:
+            a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
+                natural inner join idoldb where centerid in ({cid_list[0]}, {cid_list[1]}) and type = {zST}
+                order by idnumber desc''').fetchone()
+            if a == None:
+                a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
+                natural inner join idoldb where centerid in ({cid_list[0]}, {cid_list[1]}) order by idnumber desc''').fetchone()
+            total = findall('[0-9]+', a[5])[1]
+            idnumber, idoltype, skill = a[0], a[1], 0
+            vocal = findall('[0-9]+', a[2])[1]
+            dance = findall('[0-9]+', a[3])[1]
+            visual = findall('[0-9]+', a[4])[1]
+            idoldata_full = total, idnumber, idoltype, skill, vocal, dance, visual
+            adict[str(lcid)] = idoldata_full
+        friend_list.append(idoldata_full)
+
     for cunit in tclist:
         cucount = cucount + 1
         # Select Friend
@@ -72,20 +93,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
             if lcid in canvo: extract_friend(6, 0, 1)
             if lcid in canda: extract_friend(7, 0, 2)
             if lcid in canvi: extract_friend(8, 0, 3)
-            if lcid in c3tall:
-                try:
-                    idoldata_full = adict[str(lcid)]
-                except:
-                    a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
-                        natural inner join idoldb where centerid = {lcid} order by idnumber desc''').fetchone()
-                    total = findall('[0-9]+', a[5])[1]
-                    idnumber, idoltype, skill = a[0], a[1], 0
-                    vocal = findall('[0-9]+', a[2])[1]
-                    dance = findall('[0-9]+', a[3])[1]
-                    visual = findall('[0-9]+', a[4])[1]
-                    idoldata_full = total, idnumber, idoltype, skill, vocal, dance, visual
-                    adict[str(lcid)] = idoldata_full
-                friend_list.append(idoldata_full)
+            if lcid in c3tvo: extract_friend_c3t(lcid, c3tvo)
+            if lcid in c3tda: extract_friend_c3t(lcid, c3tda)
+            if lcid in c3tvi: extract_friend_c3t(lcid, c3tvi)
         else:
             if lcid in cprvo: extract_friend(0, 1, 1)
             if lcid in cprda: extract_friend(1, 1, 2)
@@ -96,24 +106,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
             if lcid in canvo: extract_friend(6, 3, 1)
             if lcid in canda: extract_friend(7, 3, 2)
             if lcid in canvi: extract_friend(8, 3, 3)
-            if lcid in c3tall:
-                try:
-                    idoldata_full = adict[str(lcid)]
-                except:
-                    a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
-                        natural inner join idoldb where centerid = {lcid} and type = {zST}
-                        order by idnumber desc''').fetchone()
-                    if a == None:
-                        a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
-                            natural inner join idoldb where centerid = {lcid} order by idnumber desc''').fetchone()
-                    total = findall('[0-9]+', a[5])[1]
-                    idnumber, idoltype, skill = a[0], a[1], 0
-                    vocal = findall('[0-9]+', a[2])[1]
-                    dance = findall('[0-9]+', a[3])[1]
-                    visual = findall('[0-9]+', a[4])[1]
-                    idoldata_full = total, idnumber, idoltype, skill, vocal, dance, visual
-                    adict[str(lcid)] = idoldata_full
-                friend_list.append(idoldata_full)
+            if lcid in c3tvo: extract_friend_c3t(lcid, c3tvo)
+            if lcid in c3tda: extract_friend_c3t(lcid, c3tda)
+            if lcid in c3tvi: extract_friend_c3t(lcid, c3tvi)
 
         # Make Support List
         splist = list()
@@ -165,10 +160,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
                 CN = cur1.execute(f'select * from centerdb where idnumber = {cunit[0][1]}').fetchone()
                 CNFRdict[cunit[0][1]] = CN
 
-            if CN[1] in c3tall:
-                if CN[1] == 121 or CN[1] == 122: voC += int(voB*1.05)
-                elif CN[1] == 124 or CN[1] == 125: daC += int(daB*1.05)
-                elif CN[1] == 127 or CN[1] == 128: viC += int(viB*1.05)
+            if CN[1] in c3tvo: voC += int(voB*1.05)
+            elif CN[1] in c3tda: daC += int(daB*1.05)
+            elif CN[1] in c3tvi: viC += int(viB*1.05)
             else:
                 if CN[2] != 0: voC = voC + int(voB*CN[2]/100)
                 elif CN[6] != 0: voC = voC + int(voB*CN[6]/100)
@@ -199,10 +193,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
                 FR = cur1.execute(f'select * from centerdb where idnumber = {friend[1]}').fetchone()
                 CNFRdict[friend[1]] = FR
 
-            if FR[1] in c3tall:
-                if FR[1] == 121 or FR[1] == 122: voF += int(voB*1.05)
-                elif FR[1] == 124 or FR[1] == 125: daF += int(daB*1.05)
-                elif FR[1] == 127 or FR[1] == 128: viF += int(viB*1.05)
+            if FR[1] in c3tvo: voF += int(voB*1.05)
+            elif FR[1] in c3tda: daF += int(daB*1.05)
+            elif FR[1] in c3tvi: viF += int(viB*1.05)
             else:
                 if FR[2] != 0: voF = voF + int(voB*FR[2]/100)
                 elif FR[6] != 0: voF = voF + int(voB*FR[6]/100)
@@ -231,10 +224,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
             voB, daB, viB = voB + vo, daB + da, viB + vi
 
             # Friend Center Bonus
-            if CN[1] in c3tall:
-                if CN[1] == 121 or CN[1] == 122: voC = voC + int(vo*1.05)
-                elif CN[1] == 124 or CN[1] == 125: daC = daC + int(da*1.05)
-                elif CN[1] == 127 or CN[1] == 128: viC = viC + int(vi*1.05)
+            if CN[1] in c3tvo: voC += int(vo*1.05)
+            elif CN[1] in c3tda: daC += int(da*1.05)
+            elif CN[1] in c3tvi: viC += int(vi*1.05)
             else:
                 if CN[2] != 0: voC = voC + int(vo*CN[2]/100)
                 elif CN[6] != 0: voC = voC + int(vo*CN[6]/100)
@@ -259,10 +251,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
                     if CN[12] != 0: viC = viC + int(vi*CN[13]/100)
 
             # Friend Friend Bonus
-            if FR[1] in c3tall:
-                if FR[1] == 121 or FR[1] == 122: voF = voF + int(vo*1.05)
-                elif FR[1] == 124 or FR[1] == 125: daF = daF + int(da*1.05)
-                elif FR[1] == 127 or FR[1] == 128: viF = viF + int(vi*1.05)
+            if FR[1] in c3tvo: voF += int(vo*1.05)
+            elif FR[1] in c3tda: daF += int(da*1.05)
+            elif FR[1] in c3tvi: viF += int(vi*1.05)
             else:
                 if FR[2] != 0: voF = voF + int(vo*FR[2]/100)
                 elif FR[6] != 0: voF = voF + int(vo*FR[6]/100)

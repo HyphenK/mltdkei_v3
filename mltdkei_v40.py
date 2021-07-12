@@ -18,7 +18,7 @@ import SimulateCalc
 import UpdateHub
 import IdolList
 import MakeUnit
-# mltdkei_mainframe for ver.4.1 21/07/07
+# mltdkei_mainframe for ver.4.11 21/07/12
 
 def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name):
     temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name)
@@ -38,7 +38,7 @@ def multi_calculator(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_z
 def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     freeze_support()
     root = Tk()
-    root.title("MLTD Deck Analyzer 4.1")
+    root.title("MLTD Deck Analyzer 4.11")
     root.geometry("+80+25")
     root.resizable(False, False)
 
@@ -949,16 +949,16 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             zCB, zIC, zSC, zTC = 20, 2000, 30, 1000
             zAH, zAR, zAS = 0, 0, 0
         elif howto == PSvalues[1]:
-            zCB, zIC, zSC, zTC = 10, 1000, 10, 1000
+            zCB, zIC, zSC, zTC = 30, 5000, 50, 2000
             zAH, zAR, zAS = 0, 0, 0
         elif howto == PSvalues[2]:
-            zCB, zIC, zSC, zTC = 30, 5000, 50, 2000
+            zCB, zIC, zSC, zTC = 50, 10000, 50, 2000
             zAH, zAR, zAS = 0, 0, 0
         elif howto == PSvalues[3]:
-            zCB, zIC, zSC, zTC = 30, 5000, 50, 2000
+            zCB, zIC, zSC, zTC = 50, 10000, 50, 2000
             zAH, zAR, zAS = 0, 2, 2
         elif howto == PSvalues[4]:
-            zCB, zIC, zSC, zTC = 30, 5000, 50, 2000
+            zCB, zIC, zSC, zTC = 50, 10000, 50, 2000
             zAH, zAR, zAS = 1, 2, 2
 
     ##### Main GUI Area #####
@@ -1065,10 +1065,10 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     txPS = Label(cvEX, text="Presets", borderwidth=2, relief="groove")
     txPS.place(x=0, y=0, width=90, height=25)
 
-    PSvalues = ["Default", "Light", "Accurate", "All Max", "Theoretical"]
+    PSvalues = ["Beginner", "Intermediate", "Ranker", "All Max", "Theoretical"]
     cbxPS = ttk.Combobox(cvEX, height=5, values=PSvalues, state="readonly")
     cbxPS.place(x=0, y=25, width=89, height=24)
-    cbxPS.set("Default")
+    cbxPS.set("Beginner")
     cbxPS.bind("<<ComboboxSelected>>", presets)
 
     bnEX = Button(cvEX, text="Advanced\nSetting", command=extra_setting)
@@ -1331,7 +1331,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     lp50p = PrintScore()
     lp50p.place_first(cvDKd, "50%", 225, 80)
 
-    version = "4.1"
+    version = "4.11"
     versioncheck = urlopen(github_url+"version_check").read().decode('utf-8')
     versioncheck = findall('Version (.+)\n', versioncheck)[0]
     if version != versioncheck: response = msgbox.askyesno("Update Avaliable",
@@ -1344,5 +1344,4 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
 
     root.update()
     main_width = root.winfo_width()
-    print(main_width)
     root.mainloop()
