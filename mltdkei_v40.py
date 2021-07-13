@@ -18,7 +18,7 @@ import SimulateCalc
 import UpdateHub
 import IdolList
 import MakeUnit
-# mltdkei_mainframe for ver.4.11 21/07/12
+# mltdkei_mainframe for ver.4.12 21/07/13
 
 def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name):
     temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name)
@@ -38,7 +38,7 @@ def multi_calculator(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_z
 def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     freeze_support()
     root = Tk()
-    root.title("MLTD Deck Analyzer 4.11")
+    root.title("MLTD Deck Analyzer 4.12")
     root.geometry("+80+25")
     root.resizable(False, False)
 
@@ -1331,7 +1331,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     lp50p = PrintScore()
     lp50p.place_first(cvDKd, "50%", 225, 80)
 
-    version = "4.11"
+    version = "4.12"
     versioncheck = urlopen(github_url+"version_check").read().decode('utf-8')
     versioncheck = findall('Version (.+)\n', versioncheck)[0]
     if version != versioncheck: response = msgbox.askyesno("Update Avaliable",

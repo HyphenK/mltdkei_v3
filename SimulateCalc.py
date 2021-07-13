@@ -4,7 +4,7 @@ from statistics import fmean
 from random import random
 # mltdkei Module #
 from NewProgress import NewProgress
-# SimulateCalc for above ver.4.1 21/07/07
+# SimulateCalc for above ver.4.12 21/07/13
 
 def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
     ideal, howmany, skdict, temp_result, hdict = inputed_ideal, inputed_zTC, dict(), list(), dict()
@@ -68,10 +68,10 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
 
         while 1:
             if hmcount >= howmany: break
-            TSlist, svnp, cvnp, spnp, cpnp = list(), [[1, 1] for i in range(runtime)], [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)]
+            TSlist, svnp, cvnp, spnp, cpnp = list(), [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)]
             for idol in skillset:
                 if idol[1] == 34: continue
-                runcount, gaptime, activetime, actpercent, sv, cv = 0, idol[3], idol[5], idol[4]/100, round(1+idol[6]/100, 2), round(idol[7]/100, 2)
+                runcount, gaptime, activetime, actpercent, sv, cv = 0, idol[3], idol[5], idol[4]/100, round(idol[6]/100, 2), round(idol[7]/100, 2)
                 while runcount < runtime and activetime != 0:
                     runcount += gaptime
                     if ideal == True or actpercent >= random():
@@ -92,17 +92,17 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
                     if ideal == True or actpercent >= random():
                         for i in range(runcount, runcount+activetime):
                             try:
-                                if svnp[i][0] > svnp[i][1]: spnp[i][0] = sv
-                                elif svnp[i][0] < svnp[i][1]: spnp[i][1] = sv
-                                if cvnp[i][0] > cvnp[i][1]: cpnp[i][0] = cv
-                                elif cvnp[i][0] < cvnp[i][1]: cpnp[i][1] = cv
+                                if svnp[i][0] != 0 and spnp[i][0] < sv: spnp[i][0] = sv
+                                if svnp[i][1] != 0 and spnp[i][1] < sv: spnp[i][1] = sv
+                                if cvnp[i][0] != 0 and cpnp[i][0] < cv: cpnp[i][0] = cv
+                                if cvnp[i][1] != 0 and cpnp[i][1] < cv: cpnp[i][1] = cv
                             except: break
 
             for n in baselist:
-                Ts = n[3]*(svnp[n[0]][0]+spnp[n[0]][0])*(svnp[n[0]][1]+spnp[n[0]][1]) + n[4]*(1+3*(cvnp[n[0]][0]+cpnp[n[0]][0]))*(1+3*(cvnp[n[0]][1]+cpnp[n[0]][1]))
+                Ts = n[3]*(1+svnp[n[0]][0]+spnp[n[0]][0]+svnp[n[0]][1]+spnp[n[0]][1]) + n[4]*(1+3*(cvnp[n[0]][0]+cpnp[n[0]][0]+cvnp[n[0]][1]+cpnp[n[0]][1]))
                 if 5 <= n[1] <= 7:
                     for j in range(len(hdict[n[2]])-1):
-                        Ts += round(hdict[n[2]][j+1]-hdict[n[2]][j], 2)*2*s*(svnp[int(hdict[n[2]][j])][0]+spnp[int(hdict[n[2]][j])][0])*(svnp[int(hdict[n[2]][j])][1]+spnp[int(hdict[n[2]][j])][1])
+                        Ts += round(hdict[n[2]][j+1]-hdict[n[2]][j], 2)*2*s*(1+svnp[int(hdict[n[2]][j])][0]+spnp[int(hdict[n[2]][j])][0]+svnp[int(hdict[n[2]][j])][1]+spnp[int(hdict[n[2]][j])][1])
                 TSlist.append(Ts)
 
             ayzlist.append(sum(TSlist))

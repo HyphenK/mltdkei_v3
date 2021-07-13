@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 import sqlite3
-# IdolList for above ver.4.1 21/07/07
+# IdolList for above ver.4.12 21/07/13
 
 def main_idollist(iconext, IDB_name, info_name):
     conn1 = sqlite3.connect(IDB_name)
@@ -12,6 +12,7 @@ def main_idollist(iconext, IDB_name, info_name):
         infofile = open(info_name, 'r', encoding='utf-8')
         infodata = infofile.read().split('\n')
         infofile.close()
+        if len(infodata)-1 != int(cur1.execute('select count(idnumber) from idoldb').fetchone()[0]): raise Exception
     except:
         msgbox.showinfo('Error', 'Info File is damaged or not updated.\nPlease check your file or update DB first.')
         return
