@@ -497,7 +497,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
 
         try:
             zST = STvalues.index(cbxST.get()) + 1
-            zSN = cur2.execute(f'select songid from SongDB where {SongDB_name} = "{str(cbxSN.get())}"').fetchone()[0]
+            zSN = cur2.execute(f"""select songid from SongDB where {SongDB_name} = '{str(cbxSN.get())}'""").fetchone()[0]
         except ValueError: # zST Error
             open_setting()
             cbxSN.config(state="disabled")
@@ -910,7 +910,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
 
     def update_lbPH(unused_option):
         nonlocal lbPH
-        songphoto = str(cur2.execute(f'select songphoto from SongDB where {SongDB_name} = "{cbxSN.get()}"').fetchone()[0])
+        songphoto = str(cur2.execute(f"""select songphoto from SongDB where {SongDB_name} = '{cbxSN.get()}'""").fetchone()[0])
         try:
             pil_img = songdict[int(songphoto)]
         except:
