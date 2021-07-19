@@ -332,7 +332,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         lb_UM.grid(row=1, column=2, sticky=E+W)
 
         UMvalues = ["Legacy", "Beta"]
-        cbx_UM = ttk.Combobox(cv_extu, width=8, height=2, values=UMvalues, state="readonly")
+        cbx_UM = ttk.Combobox(cv_extu, width=8, height=2, values=UMvalues, state="disabled")
         cbx_UM.grid(row=1, column=3)
         cbx_UM.set(UMvalues[zUM])
         cbx_UM.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zUM", UMvalues, cbx_UM))
