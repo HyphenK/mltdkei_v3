@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 import sqlite3
-# IdolList for above ver.4.12 21/07/13
+# IdolList for above ver.4.13 21/07/19
 
 def main_idollist(iconext, IDB_name, info_name):
     conn1 = sqlite3.connect(IDB_name)
@@ -183,6 +183,8 @@ def main_idollist(iconext, IDB_name, info_name):
                 data[-3] = str(havevalues.index(cbxhave_open.get()))
                 data[-2] = str(rankvalues.index(cbxrank_open.get()))
                 data[-1] = str(skillvalues.index(cbxskill_open.get())+1)
+                if triple[1] <= 4 and int(data[-2]) > 4: data[-2] = '4'
+                if triple[1] <= 4 and int(data[-1]) > 10: data[-1] = '10'
                 edited_data = ",".join(data)
                 if IDB_name == 'mltdkei_idoldata.sqlite':
                     if triple[0] < 1064: infodata[triple[0]-1] = edited_data

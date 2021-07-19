@@ -18,7 +18,7 @@ import SimulateCalc
 import UpdateHub
 import IdolList
 import MakeUnit
-# mltdkei_mainframe for ver.4.12 21/07/13
+# mltdkei_mainframe for ver.4.13 21/07/19
 
 def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name):
     temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name)
@@ -38,7 +38,7 @@ def multi_calculator(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_z
 def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     freeze_support()
     root = Tk()
-    root.title("MLTD Deck Analyzer 4.12")
+    root.title("MLTD Deck Analyzer 4.13")
     root.geometry("+80+25")
     root.resizable(False, False)
 
@@ -599,7 +599,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             temp_splist.append(hidol)
         temp_splist.sort(reverse=True)
 
-        tclist = MakeUnit.generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name, zUM)
+        tclist = MakeUnit.generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name)
 
         if len(tclist) == 0:
             open_setting()
@@ -1023,7 +1023,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     txDM = Label(cvDM, text="Deck Mode", borderwidth=2, relief="groove")
     txDM.place(x=0, y=0, width=90, height=25)
 
-    DMvalues = ["All", "Songtype", "3Type", "Princess", "Fairy", "Angel", "Princess+", "Fairy+", "Angel+", "All+"]
+    DMvalues = ["All", "Songtype", "3Type", "Princess", "Fairy", "Angel"]
     cbxDM = ttk.Combobox(cvDM, height=6, values=DMvalues, state="readonly")
     cbxDM.place(x=0, y=25, width=89, height=24)
     cbxDM.set("All")
@@ -1331,7 +1331,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     lp50p = PrintScore()
     lp50p.place_first(cvDKd, "50%", 225, 80)
 
-    version = "4.12"
+    version = "4.13"
     versioncheck = urlopen(github_url+"version_check").read().decode('utf-8')
     versioncheck = findall('Version (.+)\n', versioncheck)[0]
     if version != versioncheck: response = msgbox.askyesno("Update Avaliable",

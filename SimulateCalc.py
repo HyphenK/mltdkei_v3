@@ -4,7 +4,7 @@ from statistics import fmean
 from random import random
 # mltdkei Module #
 from NewProgress import NewProgress
-# SimulateCalc for above ver.4.12 21/07/13
+# SimulateCalc for above ver.4.13 21/07/19
 
 def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
     ideal, howmany, skdict, temp_result, hdict = inputed_ideal, inputed_zTC, dict(), list(), dict()
@@ -68,7 +68,7 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
 
         while 1:
             if hmcount >= howmany: break
-            TSlist, svnp, cvnp, spnp, cpnp = list(), [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)], [[0, 0] for i in range(runtime)]
+            TSlist, stnp, ctnp, snp, cnp = [], [], [], [[0, 0, 0, 0] for i in range(runtime)], [[0, 0, 0, 0] for i in range(runtime)]
             for idol in skillset:
                 if idol[1] == 34: continue
                 runcount, gaptime, activetime, actpercent, sv, cv = 0, idol[3], idol[5], idol[4]/100, round(idol[6]/100, 2), round(idol[7]/100, 2)
@@ -78,11 +78,11 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
                         for i in range(runcount, runcount+activetime):
                             try:
                                 if idol[1] == 30:
-                                    if svnp[i][1] < sv: svnp[i][1] = sv
-                                    if cvnp[i][1] < cv: cvnp[i][1] = cv
+                                    if snp[i][1] < sv: snp[i][1] = sv
+                                    if cnp[i][1] < cv: cnp[i][1] = cv
                                 else:
-                                    if svnp[i][0] < sv: svnp[i][0] = sv
-                                    if cvnp[i][0] < cv: cvnp[i][0] = cv
+                                    if snp[i][0] < sv: snp[i][0] = sv
+                                    if cnp[i][0] < cv: cnp[i][0] = cv
                             except: break
             for idol in skillset:
                 if idol[1] != 34: continue
@@ -92,17 +92,21 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
                     if ideal == True or actpercent >= random():
                         for i in range(runcount, runcount+activetime):
                             try:
-                                if svnp[i][0] != 0 and spnp[i][0] < sv: spnp[i][0] = sv
-                                if svnp[i][1] != 0 and spnp[i][1] < sv: spnp[i][1] = sv
-                                if cvnp[i][0] != 0 and cpnp[i][0] < cv: cpnp[i][0] = cv
-                                if cvnp[i][1] != 0 and cpnp[i][1] < cv: cpnp[i][1] = cv
+                                if snp[i][0] != 0 and snp[i][2] < sv: snp[i][2] = sv
+                                if snp[i][1] != 0 and snp[i][3] < sv: snp[i][3] = sv
+                                if cnp[i][0] != 0 and cnp[i][2] < cv: cnp[i][2] = cv
+                                if cnp[i][1] != 0 and cnp[i][3] < cv: cnp[i][3] = cv
                             except: break
 
+            for i in range(len(snp)):
+                stnp.append(1+sum(snp[i]))
+                ctnp.append(1+3*sum(cnp[i]))
+
             for n in baselist:
-                Ts = n[3]*(1+svnp[n[0]][0]+spnp[n[0]][0]+svnp[n[0]][1]+spnp[n[0]][1]) + n[4]*(1+3*(cvnp[n[0]][0]+cpnp[n[0]][0]+cvnp[n[0]][1]+cpnp[n[0]][1]))
+                Ts = n[3]*stnp[n[0]] + n[4]*ctnp[n[0]]
                 if 5 <= n[1] <= 7:
                     for j in range(len(hdict[n[2]])-1):
-                        Ts += round(hdict[n[2]][j+1]-hdict[n[2]][j], 2)*2*s*(1+svnp[int(hdict[n[2]][j])][0]+spnp[int(hdict[n[2]][j])][0]+svnp[int(hdict[n[2]][j])][1]+spnp[int(hdict[n[2]][j])][1])
+                        Ts += round(hdict[n[2]][j+1]-hdict[n[2]][j], 2)*2*s*stnp[int(hdict[n[2]][j])]
                 TSlist.append(Ts)
 
             ayzlist.append(sum(TSlist))

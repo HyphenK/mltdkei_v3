@@ -3,7 +3,7 @@ import sqlite3
 from re import findall
 # mltdkei Module #
 from NewProgress import NewProgress
-# AppealCalc for above ver.4.11 21/07/12
+# AppealCalc for above ver.4.13 21/07/19
 
 def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
     conn1 = sqlite3.connect(IDB_name)
@@ -32,6 +32,15 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
     lcdict, adict, CNFRdict = dict(), dict(), dict()
     alista = ("prvo", "prda", "prvi", "favo", "fada", "favi", "anvo", "anda", "anvi")
     alistb = (0, "prso", "faso", "anso")
+    skilldict, gapdict = dict(), dict()
+    skill_ext = cur1.execute('select idnumber, skillid, gap from skilldb').fetchall()
+    for idnumber, skillid, gap in skill_ext:
+        skilldict[str(idnumber)] = skillid
+        gapdict[str(idnumber)] = gap
+    sc_id, cm_id, db_id, pl_id = [10, 11, 13, 15], [20, 22], [30], [34]
+    if 34 in skilldict.values(): meta = 2
+    elif 30 in skilldict.values(): meta = 1
+    else: meta = 0
 
     def extract_friend(code1p, code2p, code3):
         nonlocal adict
@@ -44,8 +53,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
             idoldata_full = adict[codea]
         except:
             a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
-                natural inner join idoldb where {code1} != 0 and centerid != {code3a} and centerid != {code3b}
-                order by {code1} + {code2} desc, idnumber desc''').fetchone()
+                natural inner join idoldb natural inner join idoldb_sub
+                where {code1} != 0 and centerid != {code3a} and centerid != {code3b}
+                order by {code1} + {code2} desc, maxtotal desc''').fetchone()
             total = findall('[0-9]+', a[5])[1]
             idnumber, idoltype, skill = a[0], a[1], 0
             vocal = findall('[0-9]+', a[2])[1]
@@ -60,11 +70,9 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
             idoldata_full = adict[str(lcid)]
         except:
             a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
-                natural inner join idoldb where centerid in ({cid_list[0]}, {cid_list[1]}) and type = {zST}
-                order by idnumber desc''').fetchone()
-            if a == None:
-                a = cur1.execute(f'''select idnumber, type, vocal, dance, visual, total from centerdb
-                natural inner join idoldb where centerid in ({cid_list[0]}, {cid_list[1]}) order by idnumber desc''').fetchone()
+                natural inner join idoldb natural inner join idoldb_sub
+                where centerid in ({cid_list[0]}, {cid_list[1]})
+                order by centerid desc, type != {zST}, maxtotal desc''').fetchone()
             total = findall('[0-9]+', a[5])[1]
             idnumber, idoltype, skill = a[0], a[1], 0
             vocal = findall('[0-9]+', a[2])[1]
@@ -76,6 +84,28 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
 
     for cunit in tclist:
         cucount = cucount + 1
+        # Check Before Calculate
+        unitskill = [(skilldict[i[1]], gapdict[i[1]]) for i in cunit]
+        unit_c, passed, sc_p, cm_p = [0, 0, 0, 0], False, set(), set()
+        for skillid, gap in unitskill:
+            if skillid in sc_id:
+                unit_c[0] += 1
+                sc_p.add(gap)
+            elif skillid in cm_id:
+                unit_c[1] += 1
+                cm_p.add(gap)
+            elif skillid in db_id: unit_c[2] += 1
+            elif skillid in pl_id: unit_c[3] += 1
+        if meta >= 0 and (unit_c == [2, 3, 0, 0] or unit_c == [3, 2, 0, 0]): passed = True
+        if meta >= 1 and unit_c == [2, 2, 1, 0]: passed = True
+        if meta >= 2 and unit_c == [1, 2, 1, 1]: passed = True
+        if len(sc_p) != unit_c[0] or len(cm_p) != unit_c[1]: passed = False
+        if passed == False:
+            if cucount % cusplit == 0:
+                cupbr += 1
+                NPG.configleft(cucount, cupbr)
+            continue
+
         # Select Friend
         friend_list = list()
         try:
