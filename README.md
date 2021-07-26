@@ -37,11 +37,13 @@ Copy mltdkei_info.txt or mltdkei_info_kr.txt from older version folder and paste
 ### Presets Description / 프리셋
 
 - Beginner(under 4.1: Default): For beginners who has less SSR+ cards / SSR+ 카드 소지 수가 적은 초심자용
-- Light(under 4.1, deleted from latest version): For fast result, may not be accurate / 빠른 결과를 내는 용, 결과가 정확하지 않을 수 있음
-- Intermediate(under 4.1: Accurate): For intermediates who can make almost full SSR+ support decks / 서포트 덱을 거의 전부 SSR+로 채울 수 있을 정도로 SSR+ 카드를 보유한 중급자용
+- ~~Light(under 4.1, deleted from latest version): For fast result, may not be accurate / 빠른 결과를 내는 용, 결과가 정확하지 않을 수 있음~~
+- Intermediate(under 4.1: Accurate): For intermediates who has about 15 single type SSR+ cards / 15장 정도의 단일 속성 SSR+ 카드를 보유한 중급자용
 - Ranker(over 4.11): For rankers who has more than 100 SSR+ cards / SSR+ 카드를 100장 이상 보유한 스코어 랭킹 뛰는 랭커용
 - All Max: Suppose all of your current idols are max rank and max skill level / 현재 보유한 모든 아이돌의 능력치가 최대일 때의 결과 분석
 - Theoretical: Find the theoretical maximum score in the game / 현재 게임상에서 가능한 최상의 결과 분석
+
+"Ranker" is more accurate, but takes longer to analyze. / "Ranker" 쪽이 더 정확한 결과를 제공하지만, 그만큼 분석에 시간이 더 오래 걸립니다.
 
 ### Advanced Setting / 고급 설정
 
@@ -62,3 +64,5 @@ This program uses data from https://mltd.matsurihi.me/cards and https://imasml-t
 이 프로그램은 위에 적어놓은 두 사이트의 데이터를 사용합니다.
 
 Special Thanks to megmeg_work, hiside0, Baby_Rabbit, karl**** from MLTD-KR Naver Cafe
+
+이미지가 첨부된 한글 매뉴얼은 이쪽으로 https://gall.dcinside.com/mgallery/board/view/?id=theaterdays&no=5354535
