@@ -29,10 +29,10 @@ Copy mltdkei_info.txt or mltdkei_info_kr.txt from older version folder and paste
 - Update DB: Update DB when there is card or song update. / 카드 혹은 수록곡 갱신 시 업데이트 가능
   - It is recommended to update both after updating from older version or downloading first. / 이전 버전에서 업데이트 시 혹은 새로 다운로드 받은 후에 둘 다 한번은 업데이트 해 주는 것을 권장합니다.
   - When program gets some error, try updating both file. In most case it will solve them. / 프로그램에 에러 발생 시, 두 파일을 모두 업데이트 해 보기를 권장합니다. 대부분 해결됩니다.
-  - DB file Update can be a bit delayed due to some handwork. / 수작업으로 진행하기 때문에, DB 파일 업데이트가 약간 늦어질 수 있습니다.
+  - ~~DB file Update can be a bit delayed due to some handwork. / 수작업으로 진행하기 때문에, DB 파일 업데이트가 약간 늦어질 수 있습니다.~~ 자동 업데이트 서버 실증실험중
 - Config Idol List: Edit your current idol list / 현재 보유하고 있는 아이돌 목록을 편집
   - You can change all of idols' status shown on window with third line of buttons. / 3번째 줄의 버튼을 이용하면, 화면에 보이는 모든 아이돌의 설정 상태를 바꿀 수 있습니다.
-  - Don't forget to save before closing windows, unless you will lose your all changes. / 창을 닫기 전에 세이브 버튼을 눌러 꼭 저장하세요. 창을 그냥 닫으면 편집된 내용이 저장되지 않습니다.
+  - Press save button before closing window, unless you will lose your all changes. / 창을 닫기 전에 세이브 버튼을 눌러 꼭 저장하세요. 창을 그냥 닫으면 편집된 내용이 저장되지 않습니다.
 
 ### Presets Description / 프리셋
 
