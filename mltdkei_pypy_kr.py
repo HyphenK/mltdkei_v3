@@ -7,4 +7,4 @@ info_name = 'mltdkei_info_kr.txt'
 SongDB_name = 'name_kr'
 
 if __name__ == '__main__':
-    mltdkei_v40.mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, 0)
+    mltdkei_v40.mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, 1)

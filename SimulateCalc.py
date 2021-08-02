@@ -1,10 +1,10 @@
 # Python Module #
 import sqlite3
-from statistics import fmean
+from statistics import mean
 from random import random
 # mltdkei Module #
 from NewProgress import NewProgress
-# SimulateCalc for above ver.4.13 21/07/19
+# SimulateCalc for above ver.4.19 21/08/02
 
 def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
     ideal, howmany, skdict, temp_result, hdict = inputed_ideal, inputed_zTC, dict(), list(), dict()
@@ -119,13 +119,16 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
         bsalist.sort(reverse=True)
         if ideal == True:
             temp_result.append([(int(ayzlist[0]), int(bsalist[0])), datafair])
-            if clcount % cllength == 0:
-                clpbr += 1
-                NPG.configleft(clcount, clpbr)
+            if cllength != 0:
+                if clcount % cllength == 0:
+                    clpbr += 1
+                    NPG.configleft(clcount, clpbr)
         else:
-            pclist = int(2/1000*howmany), int(2/100*howmany), int(4/100*howmany), int(10/100*howmany), int(20/100*howmany), int(40/100*howmany), int(howmany)
-            temp_result.append([[datafair[0]]+[(int(fmean(ayzlist[0:i])), int(fmean(bsalist[0:i]))) for i in pclist]]+[datafair[1]])
+            pclist = [int(2/1000*howmany), int(1/100*howmany), int(2/100*howmany),
+                      int(4/100*howmany), int(10/100*howmany), int(20/100*howmany), int(40/100*howmany), int(howmany)]
+            temp_result.append([[datafair[0]]+[(int(ayzlist[0]), int(bsalist[0]))]+[(int(mean(ayzlist[0:i])), int(mean(bsalist[0:i]))) for i in pclist]]+[datafair[1]])
             NPG.configleft(clcount, clcount)
             clmpbr = 0
             NPG.configmiddle(clmpbr)
+    NPG.closewindow()
     return temp_result

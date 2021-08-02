@@ -18,27 +18,35 @@ import SimulateCalc
 import UpdateHub
 import IdolList
 import MakeUnit
-# mltdkei_mainframe for ver.4.13 21/07/19
+# mltdkei_mainframe for ver.4.19 21/08/02
 
-def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name):
-    temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name)
+def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name, check):
+    temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check)
     result.put(temp_result)
     return
+
+def single_appeal(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check):
+    temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check)
+    return temp_result
 
 def multi_ideal(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_zDI, IDB_name):
     temp_result = SimulateCalc.calculator(ntcalc, True, 1, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name)
     result.put(temp_result)
     return
 
+def single_ideal(ntcalc, i1, i2, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
+    temp_result = SimulateCalc.calculator(ntcalc, True, 1, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name)
+    return temp_result
+
 def multi_calculator(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name):
     temp_result = [(fair1[zOB], fair1, fair2) for fair1, fair2 in SimulateCalc.calculator(ntcalc, False, zTC, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name)]
     result.put(temp_result)
     return
 
-def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
+def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
     freeze_support()
     root = Tk()
-    root.title("MLTD Deck Analyzer 4.13")
+    root.title("MLTD Deck Analyzer 4.19")
     root.geometry("+80+25")
     root.resizable(False, False)
 
@@ -80,7 +88,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     ##### Definition for Extra Setting Window #####
 
     zCB, zIC, zSC, zTC = 20, 2000, 30, 1000
-    zSL1, zSL2, zAH, zAR, zAS, zUM = 0, 0, 0, 0, 0, 1
+    zSL1, zSL2, zAH, zAR, zAS, zSF1, zSF2 = 0, 0, 0, 0, 0, 0, 0
 
     def extra_setting():
         try:
@@ -120,8 +128,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             cbxPS.set("Manual")
 
         def save_zA(inputed, fromwhere, whereget):
-            nonlocal zUM, zAH, zAR, zAS
-            if inputed == "zUM": zUM = fromwhere.index(whereget.get())
+            nonlocal zAH, zAR, zAS
             if inputed == "zAH": zAH = fromwhere.index(whereget.get())
             if inputed == "zAR": zAR = fromwhere.index(whereget.get())
             if inputed == "zAS": zAS = fromwhere.index(whereget.get())
@@ -292,86 +299,86 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         cv_extu = Label(ext_root, borderwidth=2, relief="groove")
         cv_extu.grid(row=0, column=0)
 
-        txCB = Label(cv_extu, text=" Combination ")
+        txCB = Label(cv_extu, text="Using Idols")
         txCB.grid(row=0, column=0, sticky=E+W)
 
-        CBvalues = [5*i for i in range(2, 16)]
-        cbxCB = ttk.Combobox(cv_extu, width=8, height=10, values=CBvalues, state="readonly")
+        CBvalues = [10*i for i in range(2, 8)]
+        cbxCB = ttk.Combobox(cv_extu, width=8, height=6, values=CBvalues, state="readonly")
         cbxCB.grid(row=0, column=1)
         cbxCB.set(zCB)
         cbxCB.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zCB", cbxCB))
 
-        txIC = Label(cv_extu, text="Ideal Calc")
-        txIC.grid(row=1, column=0, sticky=E+W)
-
-        ICvalues = [1000*i for i in range(1, 21)]
-        cbxIC = ttk.Combobox(cv_extu, width=8, height=10, values=ICvalues, state="readonly")
-        cbxIC.grid(row=1, column=1)
-        cbxIC.set(zIC)
-        cbxIC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zIC", cbxIC))
-
         txSC = Label(cv_extu, text="Score Calc")
-        txSC.grid(row=2, column=0, sticky=E+W)
+        txSC.grid(row=1, column=0, sticky=E+W)
 
-        SCvalues = [5*i for i in range(2, 21)]
-        cbxSC = ttk.Combobox(cv_extu, width=8, height=10, values=SCvalues, state="readonly")
-        cbxSC.grid(row=2, column=1)
+        SCvalues = [10, 20, 30, 50, 75, 100, 150, 200]
+        cbxSC = ttk.Combobox(cv_extu, width=8, height=8, values=SCvalues, state="readonly")
+        cbxSC.grid(row=1, column=1)
         cbxSC.set(zSC)
         cbxSC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zSC", cbxSC))
 
         txTC = Label(cv_extu, text="Time of Calc")
-        txTC.grid(row=0, column=2, sticky=E+W)
+        txTC.grid(row=2, column=0, sticky=E+W)
 
-        TCvalues = [1000*i for i in range(1, 21)]
-        cbxTC = ttk.Combobox(cv_extu, width=8, height=10, values=TCvalues, state="readonly")
-        cbxTC.grid(row=0, column=3)
+        TCvalues = [1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000]
+        cbxTC = ttk.Combobox(cv_extu, width=8, height=9, values=TCvalues, state="readonly")
+        cbxTC.grid(row=2, column=1)
         cbxTC.set(zTC)
         cbxTC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zTC", cbxTC))
 
-        lb_UM = Label(cv_extu, text=" Unit Making Mode ")
-        lb_UM.grid(row=1, column=2, sticky=E+W)
-
-        UMvalues = ["Legacy", "Beta"]
-        cbx_UM = ttk.Combobox(cv_extu, width=8, height=2, values=UMvalues, state="disabled")
-        cbx_UM.grid(row=1, column=3)
-        cbx_UM.set(UMvalues[zUM])
-        cbx_UM.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zUM", UMvalues, cbx_UM))
-
         lb_AH = Label(cv_extu, text="Calc With All Idol")
-        lb_AH.grid(row=2, column=2, sticky=E+W)
+        lb_AH.grid(row=0, column=2, sticky=E+W)
 
         AHvalues = ["Disable", "Enable"]
         cbx_AH = ttk.Combobox(cv_extu, width=8, height=2, values=AHvalues, state="readonly")
-        cbx_AH.grid(row=2, column=3)
+        cbx_AH.grid(row=0, column=3)
         cbx_AH.set(AHvalues[zAH])
         cbx_AH.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAH", AHvalues, cbx_AH))
 
         lb_AR = Label(cv_extu, text="Set Star Rank as")
-        lb_AR.grid(row=0, column=4, sticky=E+W)
+        lb_AR.grid(row=1, column=2, sticky=E+W)
 
         ARvalues = ["Default", "★0", "★MAX"]
         cbx_AR = ttk.Combobox(cv_extu, width=8, height=3, values=ARvalues, state="readonly")
-        cbx_AR.grid(row=0, column=5)
+        cbx_AR.grid(row=1, column=3)
         cbx_AR.set(ARvalues[zAR])
         cbx_AR.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAR", ARvalues, cbx_AR))
 
         lb_AS = Label(cv_extu, text="Set Skill Level as")
-        lb_AS.grid(row=1, column=4, sticky=E+W)
+        lb_AS.grid(row=2, column=2, sticky=E+W)
 
         ASvalues = ["Default", "Lv1", "LvMAX"]
         cbx_AS = ttk.Combobox(cv_extu, width=8, height=3, values=ASvalues, state="readonly")
-        cbx_AS.grid(row=1, column=5)
+        cbx_AS.grid(row=2, column=3)
         cbx_AS.set(ASvalues[zAS])
         cbx_AS.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAS", ASvalues, cbx_AS))
+        
+        txIC = Label(cv_extu, text="Ideal Calc (0: Calc All)")
+        txIC.grid(row=0, column=4, sticky=E+W)
 
-        lb_SL = Label(cv_extu, text=" Manual Leader Select ")
-        lb_SL.grid(row=2, column=4, sticky=E+W)
+        ICvalues = [0, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000]
+        cbxIC = ttk.Combobox(cv_extu, width=8, height=10, values=ICvalues, state="readonly")
+        cbxIC.grid(row=0, column=5)
+        cbxIC.set(zIC)
+        cbxIC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zIC", cbxIC))
+
+        lb_SL = Label(cv_extu, text="Manual Leader Select")
+        lb_SL.grid(row=1, column=4, sticky=E+W)
 
         SLvalues = ["Disable", "Enable"]
         cbx_SL = ttk.Combobox(cv_extu, width=8, height=2, values=SLvalues, state="readonly")
-        cbx_SL.grid(row=2, column=5)
+        cbx_SL.grid(row=1, column=5)
         cbx_SL.set(SLvalues[zSL1])
         cbx_SL.bind("<<ComboboxSelected>>", save_zSL1)
+        
+        lb_SF = Label(cv_extu, text="Manual Friend Select")
+        lb_SF.grid(row=2, column=4, sticky=E+W)
+
+        SFvalues = ["Disable", "Enable"]
+        cbx_SF = ttk.Combobox(cv_extu, width=8, height=2, values=SFvalues, state="disabled")
+        cbx_SF.grid(row=2, column=5)
+        cbx_SF.set(SFvalues[zSF1])
+        cbx_SF.bind("<<ComboboxSelected>>", save_zSL1)
 
         cv_extd = Frame(ext_root, width=572, height=129, borderwidth=2, relief="groove")
         cv_extd.grid(row=1, column=0)
@@ -514,13 +521,13 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         zDM = DMvalues.index(cbxDM.get())
         zDT = DTvalues.index(cbxDT.get())
         zOB = OBvalues.index(cbxOB.get())
-        nonlocal zCB, zIC, zSC, zTC, zSL1, zSL2, zAH, zAR, zAS, zUM
+        nonlocal zCB, zIC, zSC, zTC, zSL1, zSL2, zAH, zAR, zAS
 
         if zDI == 6 and zSN != 124:
             open_setting()
             msgbox.showwarning("Difficulty Error", "This difficulty is not compatible with the selected song.")
             return
-        if (zUM == 0 and zCB > 30) or (zUM == 1 and zCB > 50) or zSC > 100 or zTC > 5000:
+        if zCB > 50 or zSC > 100 or zTC > 5000:
             response = msgbox.askokcancel("Warning",
                 "Proceeding with this setting can be time consuming.\nDo you still want to proceed?")
             if response == 1:
@@ -608,55 +615,34 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             return
 
         process_make = process_count//2
-        if process_make > 10:
-            process_make = 10
 
-        tclist = [tclist[(i*len(tclist))//process_make:((i+1)*len(tclist))//process_make] for i in range(process_make)]
-        tc_queue = Manager().Queue()
-        process1 = Process(target=multi_appeal, args=(1, tc_queue, tclist[0], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 2: process2 = Process(target=multi_appeal, args=(2, tc_queue, tclist[1], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 3: process3 = Process(target=multi_appeal, args=(3, tc_queue, tclist[2], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 4: process4 = Process(target=multi_appeal, args=(4, tc_queue, tclist[3], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 5: process5 = Process(target=multi_appeal, args=(5, tc_queue, tclist[4], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 6: process6 = Process(target=multi_appeal, args=(6, tc_queue, tclist[5], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 7: process7 = Process(target=multi_appeal, args=(7, tc_queue, tclist[6], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 8: process8 = Process(target=multi_appeal, args=(8, tc_queue, tclist[7], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 9: process9 = Process(target=multi_appeal, args=(9, tc_queue, tclist[8], temp_splist, zST, difull, zLT, IDB_name))
-        if process_make >= 10: process10 = Process(target=multi_appeal, args=(10, tc_queue, tclist[9], temp_splist, zST, difull, zLT, IDB_name))
-        try:
-            process1.start()
-            process2.start()
-            process3.start()
-            process4.start()
-            process5.start()
-            process6.start()
-            process7.start()
-            process8.start()
-            process9.start()
-            process10.start()
-        except:
-            pass
-        try:
-            process1.join()
-            process2.join()
-            process3.join()
-            process4.join()
-            process5.join()
-            process6.join()
-            process7.join()
-            process8.join()
-            process9.join()
-            process10.join()
-        except:
-            pass
-
-        qsize = tc_queue.qsize()
-        while qsize > 0:
-            iclist = iclist + tc_queue.get()
-            qsize = qsize - 1
-
+        for check in [1, 0]:
+            if pypy == 0:
+                tclist = [tclist[(i*len(tclist))//process_make:((i+1)*len(tclist))//process_make] for i in range(process_make)]
+                # Bug Appeared. Need to investigate deeper.
+                # Issue #2 - Error on second tclist when card is not enough to make deck
+                for i in range(len(tclist)):
+                    if len(tclist[i]) == 1: tclist[i] = tclist[i][0]
+                # Temp Bug Fix Part End
+                tc_queue = Manager().Queue()
+                process_list = []
+                for i in range(process_make):
+                    process = Process(target=multi_appeal, args=(i+1, tc_queue, tclist[i], temp_splist, zST, difull, zLT, IDB_name, check))
+                    process_list.append(process)
+                    process.start()
+                for process in process_list:
+                    process.join()
+                qsize = tc_queue.qsize()
+                while qsize > 0:
+                    iclist = iclist + tc_queue.get()
+                    qsize = qsize - 1
+            elif pypy == 1:
+                iclist = single_appeal(tclist, temp_splist, zST, difull, zLT, 1, IDB_name, check)
+            if len(iclist) != 0: break
+        
         iclist.sort(reverse=True)
-        iclist = iclist[0:zIC]
+        if len(iclist) == 0: print("Warning: IC 0")
+        if zIC != 0: iclist = iclist[0:zIC]
         time_CDA = round(time() - start_time, 2)
         start_time_CIS = time()
 
@@ -666,51 +652,25 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         songinfo_zDI = cur2.execute(f'select abstime, track, type, bpm, duration, noteid from {songinfo[4] + str(zDI)}').fetchall()
         songinfo_zDI.sort()
 
-        iclist = [iclist[(i*len(iclist))//process_make:((i+1)*len(iclist))//process_make] for i in range(process_make)]
-        ic_queue = Manager().Queue()
-        process1 = Process(target=multi_ideal, args=(1, iclist[0], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 2: process2 = Process(target=multi_ideal, args=(2, iclist[1], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 3: process3 = Process(target=multi_ideal, args=(3, iclist[2], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 4: process4 = Process(target=multi_ideal, args=(4, iclist[3], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 5: process5 = Process(target=multi_ideal, args=(5, iclist[4], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 6: process6 = Process(target=multi_ideal, args=(6, iclist[5], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 7: process7 = Process(target=multi_ideal, args=(7, iclist[6], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 8: process8 = Process(target=multi_ideal, args=(8, iclist[7], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 9: process9 = Process(target=multi_ideal, args=(9, iclist[8], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        if process_make >= 10: process10 = Process(target=multi_ideal, args=(10, iclist[9], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-        try:
-            process1.start()
-            process2.start()
-            process3.start()
-            process4.start()
-            process5.start()
-            process6.start()
-            process7.start()
-            process8.start()
-            process9.start()
-            process10.start()
-        except:
-            pass
-        try:
-            process1.join()
-            process2.join()
-            process3.join()
-            process4.join()
-            process5.join()
-            process6.join()
-            process7.join()
-            process8.join()
-            process9.join()
-            process10.join()
-        except:
-            pass
-
-        qsize = ic_queue.qsize()
-        while qsize > 0:
-            sclist = sclist + ic_queue.get()
-            qsize = qsize - 1
-
+        if pypy == 0:
+            iclist = [iclist[(i*len(iclist))//process_make:((i+1)*len(iclist))//process_make] for i in range(process_make)]
+            ic_queue = Manager().Queue()
+            process_list = []
+            for i in range(process_make):
+                process = Process(target=multi_ideal, args=(i+1, iclist[i], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
+                process_list.append(process)
+                process.start()
+            for process in process_list:
+                process.join()
+            qsize = ic_queue.qsize()
+            while qsize > 0:
+                sclist = sclist + ic_queue.get()
+                qsize = qsize - 1
+        elif pypy == 1:
+            sclist = single_ideal(iclist, True, 1, songinfo, songinfo_zSN, songinfo_zDI, 1, IDB_name)
+        
         sclist.sort(reverse=True)
+        if len(sclist) == 0: print("Warning: SC 0")
         sclist = sclist[0:zSC]
         rslist = list()
         time_CIS = round(time() - start_time_CIS, 2)
@@ -718,42 +678,13 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
 
         sclist = [sclist[(i*len(sclist))//process_make:((i+1)*len(sclist))//process_make] for i in range(process_make)]
         sc_queue = Manager().Queue()
-        process1 = Process(target=multi_calculator, args=(1, sclist[0], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 2: process2 = Process(target=multi_calculator, args=(2, sclist[1], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 3: process3 = Process(target=multi_calculator, args=(3, sclist[2], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 4: process4 = Process(target=multi_calculator, args=(4, sclist[3], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 5: process5 = Process(target=multi_calculator, args=(5, sclist[4], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 6: process6 = Process(target=multi_calculator, args=(6, sclist[5], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 7: process7 = Process(target=multi_calculator, args=(7, sclist[6], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 8: process8 = Process(target=multi_calculator, args=(8, sclist[7], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 9: process9 = Process(target=multi_calculator, args=(9, sclist[8], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        if process_make >= 10: process10 = Process(target=multi_calculator, args=(10, sclist[9], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
-        try:
-            process1.start()
-            process2.start()
-            process3.start()
-            process4.start()
-            process5.start()
-            process6.start()
-            process7.start()
-            process8.start()
-            process9.start()
-            process10.start()
-        except:
-            pass
-        try:
-            process1.join()
-            process2.join()
-            process3.join()
-            process4.join()
-            process5.join()
-            process6.join()
-            process7.join()
-            process8.join()
-            process9.join()
-            process10.join()
-        except:
-            pass
+        process_list = []
+        for i in range(process_make):
+            process = Process(target=multi_calculator, args=(i+1, sclist[i], sc_queue, songinfo, songinfo_zSN, songinfo_zDI, zTC, zOB, IDB_name))
+            process_list.append(process)
+            process.start()
+        for process in process_list:
+            process.join()
 
         qsize = sc_queue.qsize()
         while qsize > 0:
@@ -801,13 +732,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         try: calc_result = resultdict[notebook.index(notebook.select())]
         except: return
         whichnote = notebook.index(notebook.select())
-        if whichnote == 0: NTframe0.write_notebook(whichnote, calc_result[0])
-        elif whichnote == 1: NTframe1.write_notebook(whichnote, calc_result[0])
-        elif whichnote == 2: NTframe2.write_notebook(whichnote, calc_result[0])
-        elif whichnote == 3: NTframe3.write_notebook(whichnote, calc_result[0])
-        elif whichnote == 4: NTframe4.write_notebook(whichnote, calc_result[0])
-        elif whichnote == 5: NTframe5.write_notebook(whichnote, calc_result[0])
-        elif whichnote == 6: NTframe6.write_notebook(whichnote, calc_result[0])
+        NTlist[whichnote].write_notebook(whichnote, calc_result[0])
         rslist = calc_result[1]
         def make_btn_one(in_i):
             nonlocal scrollable_frame1
@@ -825,16 +750,10 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         root.update()
 
     def print_display_dot(where):
-        chlist = ["light gray" for i in range(8)]
+        chlist = ["light gray" for i in range(len(lpplist))]
         if where != -1: chlist[where] = "blue"
-        lpideal.change_dot(chlist[0])
-        lppoint.change_dot(chlist[1])
-        lp1p.change_dot(chlist[2])
-        lp2p.change_dot(chlist[3])
-        lp5p.change_dot(chlist[4])
-        lp10p.change_dot(chlist[5])
-        lp20p.change_dot(chlist[6])
-        lp50p.change_dot(chlist[7])
+        for i in range(len(lpplist)):
+            lpplist[i].change_dot(chlist[i])
 
     def print_display(need_to_print, deckno):
         reset_display()
@@ -846,32 +765,15 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         lpDKvocal.config(text=result[2][4])
         lpDKdance.config(text=result[2][5])
         lpDKvisual.config(text=result[2][6])
-        lpideal.change_print(result[1][0][0], result[1][0][1])
-        lppoint.change_print(result[1][1][0], result[1][1][1])
-        lp1p.change_print(result[1][2][0], result[1][2][1])
-        lp2p.change_print(result[1][3][0], result[1][3][1])
-        lp5p.change_print(result[1][4][0], result[1][4][1])
-        lp10p.change_print(result[1][5][0], result[1][5][1])
-        lp20p.change_print(result[1][6][0], result[1][6][1])
-        lp50p.change_print(result[1][7][0], result[1][7][1])
+        for i in range(len(lpplist)):
+            lpplist[i].change_print(result[1][i][0], result[1][i][1])
         print_display_dot(result[1].index(result[0]))
         root.update()
-        print_display_photo(lpDKdeck0, result[2][1][0][0], 73)
-        print_display_photo(lpDKdeck1, result[2][1][1][0], 73)
-        print_display_photo(lpDKdeck2, result[2][1][2][0], 73)
-        print_display_photo(lpDKdeck3, result[2][1][3][0], 73)
-        print_display_photo(lpDKdeck4, result[2][1][4][0], 73)
-        print_display_photo(lpDKdeck5, result[2][2], 73)
-        print_display_photo(lpDKdeck6, result[2][3][0], 43)
-        print_display_photo(lpDKdeck7, result[2][3][1], 43)
-        print_display_photo(lpDKdeck8, result[2][3][2], 43)
-        print_display_photo(lpDKdeck9, result[2][3][3], 43)
-        print_display_photo(lpDKdeck10, result[2][3][4], 43)
-        print_display_photo(lpDKdeck11, result[2][3][5], 43)
-        print_display_photo(lpDKdeck12, result[2][3][6], 43)
-        print_display_photo(lpDKdeck13, result[2][3][7], 43)
-        print_display_photo(lpDKdeck14, result[2][3][8], 43)
-        print_display_photo(lpDKdeck15, result[2][3][9], 43)
+        for i in range(5):
+            print_display_photo(lpDKlist[i], result[2][1][i][0], 73)
+        print_display_photo(lpDKlist[5], result[2][2], 73)
+        for i in range(10):
+            print_display_photo(lpDKlist[i+6], result[2][3][i], 43)
 
     def reset_display():
         lpDKdeckno.config(text="<Deck #-->")
@@ -881,31 +783,11 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         lpDKvocal.config(text="--")
         lpDKdance.config(text="--")
         lpDKvisual.config(text="--")
-        lpideal.change_print("--", "--")
-        lppoint.change_print("--", "--")
-        lp1p.change_print("--", "--")
-        lp2p.change_print("--", "--")
-        lp5p.change_print("--", "--")
-        lp10p.change_print("--", "--")
-        lp20p.change_print("--", "--")
-        lp50p.change_print("--", "--")
+        for lpp in lpplist:
+            lpp.change_print("--", "--")
         print_display_dot(-1)
-        lpDKdeck0.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck1.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck2.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck3.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck4.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck5.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck6.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck7.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck8.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck9.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck10.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck11.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck12.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck13.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck14.config(image="", borderwidth=2, relief="groove")
-        lpDKdeck15.config(image="", borderwidth=2, relief="groove")
+        for lpDK in lpDKlist:
+            lpDK.config(image="", borderwidth=2, relief="groove")
 
     ##### Definition for Main GUI #####
 
@@ -1047,8 +929,9 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     txOB = Label(cvOB, text="Order By", borderwidth=2, relief="groove")
     txOB.place(x=0, y=0, width=90, height=25)
 
-    OBvalues = ["Ideal Score", "0.1% Score", "1% Score", "2% Score", "5% Score", "10% Score", "20% Score", "50% Score"]
-    cbxOB = ttk.Combobox(cvOB, height=8, values=OBvalues, state="readonly")
+    lpptext = ["Ideal", "Best", "0.1%", "0.5%", "1%", "2%", "5%", "10%", "20%", "50%"]
+    OBvalues = [i+" Score" for i in lpptext]
+    cbxOB = ttk.Combobox(cvOB, height=10, values=OBvalues, state="readonly")
     cbxOB.place(x=0, y=25, width=89, height=24)
     cbxOB.set("10% Score")
 
@@ -1114,7 +997,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             self.f_lbOB = Label(self.NTframe, text="Rearrange By:")
             self.f_lbOB.place(x=350, y=25, width=90, height=25)
 
-            self.f_cbxOB = ttk.Combobox(self.NTframe, height=8, values=OBvalues, state="disabled")
+            self.f_cbxOB = ttk.Combobox(self.NTframe, height=10, values=OBvalues, state="disabled")
             self.f_cbxOB.place(x=440, y=25, width=105, height=24)
 
         def write_notebook(self, number, data):
@@ -1141,26 +1024,12 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
             self.f_cbxOB.set(OBvalues[data[7]])
             self.f_cbxOB.bind("<<ComboboxSelected>>", lambda unused_option: rearrange_data(number, OBvalues.index(self.f_cbxOB.get())))
 
-    NTframe0 = NotebookFrame()
-    NTframe0.make_frame(bbcvDN, notebook, 0)
-
-    NTframe1 = NotebookFrame()
-    NTframe1.make_frame(bbcvDN, notebook, 1)
-
-    NTframe2 = NotebookFrame()
-    NTframe2.make_frame(bbcvDN, notebook, 2)
-
-    NTframe3 = NotebookFrame()
-    NTframe3.make_frame(bbcvDN, notebook, 3)
-
-    NTframe4 = NotebookFrame()
-    NTframe4.make_frame(bbcvDN, notebook, 4)
-
-    NTframe5 = NotebookFrame()
-    NTframe5.make_frame(bbcvDN, notebook, 5)
-
-    NTframe6 = NotebookFrame()
-    NTframe6.make_frame(bbcvDN, notebook, 6)
+    NTlist = []
+    
+    for i in range(7):
+        NTframe = NotebookFrame()
+        NTframe.make_frame(bbcvDN, notebook, i)
+        NTlist.append(NTframe)
 
     ##### Left Button Area #####
 
@@ -1168,7 +1037,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
     cvYK.grid(row=1, column=0)
 
     ykbn_container = Frame(cvYK)
-    ykbn_canvas = Canvas(ykbn_container, width=70, height=266)
+    ykbn_canvas = Canvas(ykbn_container, width=70, height=286)
     scrollbar = Scrollbar(ykbn_container, command=ykbn_canvas.yview)
     scrollable_frame1 = Frame(ykbn_canvas)
 
@@ -1183,7 +1052,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
 
     ##### Result Print Area #####
 
-    cvDK = Frame(bbcvDN, width=454, height=274, borderwidth=2, relief="groove", bg="white")
+    cvDK = Frame(bbcvDN, width=454, height=294, borderwidth=2, relief="groove", bg="white")
     cvDK.grid(row=1, column=1)
 
     lpDKdeckno = Label(cvDK, text="<Deck -->", font=font10)
@@ -1221,54 +1090,24 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
 
     cviDK = Frame(cvDK, width=450, height=120)
     cviDK.place(x=0, y=50)
-
-    lpDKdeck0 = Label(cviDK, text="Leader", borderwidth=2, relief="groove", bg="white")
-    lpDKdeck0.place(x=0, y=0, width=75, height=75)
-
-    lpDKdeck1 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck1.place(x=75, y=0, width=75, height=75)
-
-    lpDKdeck2 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck2.place(x=150, y=0, width=75, height=75)
-
-    lpDKdeck3 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck3.place(x=225, y=0, width=75, height=75)
-
-    lpDKdeck4 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck4.place(x=300, y=0, width=75, height=75)
-
-    lpDKdeck5 = Label(cviDK, text="Friend", borderwidth=2, relief="groove", bg="white")
-    lpDKdeck5.place(x=375, y=0, width=75, height=75)
-
-    lpDKdeck6 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck6.place(x=0, y=75, width=45, height=45)
-
-    lpDKdeck7 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck7.place(x=45, y=75, width=45, height=45)
-
-    lpDKdeck8 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck8.place(x=90, y=75, width=45, height=45)
-
-    lpDKdeck9 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck9.place(x=135, y=75, width=45, height=45)
-
-    lpDKdeck10 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck10.place(x=180, y=75, width=45, height=45)
-
-    lpDKdeck11 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck11.place(x=225, y=75, width=45, height=45)
-
-    lpDKdeck12 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck12.place(x=270, y=75, width=45, height=45)
-
-    lpDKdeck13 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck13.place(x=315, y=75, width=45, height=45)
-
-    lpDKdeck14 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck14.place(x=360, y=75, width=45, height=45)
-
-    lpDKdeck15 = Label(cviDK, borderwidth=2, relief="groove", bg="white")
-    lpDKdeck15.place(x=405, y=75, width=45, height=45)
+    
+    lpDKlist = []
+    lpDKx1, lpDKx2 = -75, -45
+    
+    for i in [75 for j in range(6)]:
+        lpDKx1 += i
+        lpDKdeck = Label(cviDK, borderwidth=2, relief="groove", bg="white")
+        lpDKdeck.place(x=lpDKx1, y=0, width=i, height=i)
+        lpDKlist.append(lpDKdeck)
+        
+    for i in [45 for j in range(10)]:
+        lpDKx2 += i
+        lpDKdeck = Label(cviDK, borderwidth=2, relief="groove", bg="white")
+        lpDKdeck.place(x=lpDKx2, y=75, width=i, height=i)
+        lpDKlist.append(lpDKdeck)
+        
+    lpDKlist[0].config(text="Leader")
+    lpDKlist[5].config(text="Friend")
 
     class PrintScore:
         def place_first(self, framename, text1, x1, y1):
@@ -1294,7 +1133,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
         def change_dot(self, which):
             self.lpDKb.config(bg=which)
 
-    cvDKd = Frame(cvDK, width=450, height=100)
+    cvDKd = Frame(cvDK, width=450, height=120)
     cvDKd.place(x=0, y=170)
 
     lpscore1 = Label(cvDKd, text="Total", font=font9b)
@@ -1308,32 +1147,21 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name):
 
     lpbefore2 = Label(cvDKd, text="Before S.A", font=font9b)
     lpbefore2.place(x=375, y=0, width=75, height=20)
+    
+    lpplist = []
+    lppy = [20, 40, 60, 80, 100]
+    
+    for i in range(5):
+        lpp = PrintScore()
+        lpp.place_first(cvDKd, lpptext[i], 0, lppy[i])
+        lpplist.append(lpp)
+        
+    for i in range(5):
+        lpp = PrintScore()
+        lpp.place_first(cvDKd, lpptext[i+5], 225, lppy[i])
+        lpplist.append(lpp)
 
-    lpideal = PrintScore()
-    lpideal.place_first(cvDKd, "Ideal", 0, 20)
-
-    lppoint = PrintScore()
-    lppoint.place_first(cvDKd, "0.1%", 0, 40)
-
-    lp1p = PrintScore()
-    lp1p.place_first(cvDKd, "1%", 0, 60)
-
-    lp2p = PrintScore()
-    lp2p.place_first(cvDKd, "2%", 0, 80)
-
-    lp5p = PrintScore()
-    lp5p.place_first(cvDKd, "5%", 225, 20)
-
-    lp10p = PrintScore()
-    lp10p.place_first(cvDKd, "10%", 225, 40)
-
-    lp20p = PrintScore()
-    lp20p.place_first(cvDKd, "20%", 225, 60)
-
-    lp50p = PrintScore()
-    lp50p.place_first(cvDKd, "50%", 225, 80)
-
-    version = "4.13"
+    version = "4.19"
     versioncheck = urlopen(github_url+"version_check").read().decode('utf-8')
     versioncheck = findall('Version (.+)\n', versioncheck)[0]
     if version != versioncheck: response = msgbox.askyesno("Update Avaliable",

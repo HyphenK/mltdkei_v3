@@ -3,9 +3,9 @@ import sqlite3
 from re import findall
 # mltdkei Module #
 from NewProgress import NewProgress
-# AppealCalc for above ver.4.13 21/07/19
+# AppealCalc for above ver.4.19 21/08/02
 
-def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
+def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check):
     conn1 = sqlite3.connect(IDB_name)
     cur1 = conn1.cursor()
     NPG = NewProgress()
@@ -85,26 +85,27 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
     for cunit in tclist:
         cucount = cucount + 1
         # Check Before Calculate
-        unitskill = [(skilldict[i[1]], gapdict[i[1]]) for i in cunit]
-        unit_c, passed, sc_p, cm_p = [0, 0, 0, 0], False, set(), set()
-        for skillid, gap in unitskill:
-            if skillid in sc_id:
-                unit_c[0] += 1
-                sc_p.add(gap)
-            elif skillid in cm_id:
-                unit_c[1] += 1
-                cm_p.add(gap)
-            elif skillid in db_id: unit_c[2] += 1
-            elif skillid in pl_id: unit_c[3] += 1
-        if meta >= 0 and (unit_c == [2, 3, 0, 0] or unit_c == [3, 2, 0, 0]): passed = True
-        if meta >= 1 and unit_c == [2, 2, 1, 0]: passed = True
-        if meta >= 2 and unit_c == [1, 2, 1, 1]: passed = True
-        if len(sc_p) != unit_c[0] or len(cm_p) != unit_c[1]: passed = False
-        if passed == False:
-            if cucount % cusplit == 0:
-                cupbr += 1
-                NPG.configleft(cucount, cupbr)
-            continue
+        if check == 1:
+            unitskill = [(skilldict[i[1]], gapdict[i[1]]) for i in cunit]
+            unit_c, passed, sc_p, cm_p = [0, 0, 0, 0], False, set(), set()
+            for skillid, gap in unitskill:
+                if skillid in sc_id:
+                    unit_c[0] += 1
+                    sc_p.add(gap)
+                elif skillid in cm_id:
+                    unit_c[1] += 1
+                    cm_p.add(gap)
+                elif skillid in db_id: unit_c[2] += 1
+                elif skillid in pl_id: unit_c[3] += 1
+            if meta >= 0 and (unit_c == [2, 3, 0, 0] or unit_c == [3, 2, 0, 0]): passed = True
+            if meta >= 1 and unit_c == [2, 2, 1, 0]: passed = True
+            if meta >= 2 and unit_c == [1, 2, 1, 1]: passed = True
+            if len(sc_p) != unit_c[0] or len(cm_p) != unit_c[1]: passed = False
+            if passed == False:
+                if cucount % cusplit == 0:
+                    cupbr += 1
+                    NPG.configleft(cucount, cupbr)
+                continue
 
         # Select Friend
         friend_list = list()
@@ -345,6 +346,5 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name):
         if cucount % cusplit == 0:
             cupbr += 1
             NPG.configleft(cucount, cupbr)
-
-    NPG.configleft(cucount, cupbr)
+    NPG.closewindow()
     return iclist

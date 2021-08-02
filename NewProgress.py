@@ -1,6 +1,6 @@
 from tkinter import *
 import tkinter.ttk as ttk
-# NewProgress for any mltdkei version
+# NewProgress for for above ver.4.19 21/08/02
 
 def disable_func(): # Disable Window's Delete Key
     pass
@@ -54,3 +54,6 @@ class NewProgress: # Progress Bar Window
     def configmiddle(self, middle):
         self.pbar_varnpm.set(middle)
         self.npr_root.update()
+        
+    def closewindow(self):
+        self.npr_root.destroy()

@@ -1,7 +1,7 @@
 # Python Module #
 import sqlite3
 from itertools import combinations
-# MakeUnit for above ver.4.13 21/07/19
+# MakeUnit for above ver.4.19 21/08/02
 
 def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name):
     tclist = list()
@@ -36,7 +36,7 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
         l2 = set_leader(ll2, 0) # 95
         ll3 = cur1.execute(f'select idnumber from centerdb where centerid = {slso[i][2]}').fetchall()
         l3 = set_leader(ll3, 0) # 90
-        if zDM == 6 or zDM == 7 or zDM == 8 or zDM == 9:
+        if zDM >= 6:
             l = l1 + l2 + l3
         else:
             if zST == 4: l = l2 + l1 + l3
@@ -53,7 +53,7 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
         l1 = set_leader(ll1, 0) # 105
         ll2 = cur1.execute(f'select idnumber from centerdb where centerid = {id2}').fetchall()
         l2 = set_leader(ll2, 0) # 105 + 10
-        if zDM == 9:
+        if zDM >= 6:
             l = l1 + l2
         else:
             if len(l2) != 0: l = l2
@@ -73,7 +73,7 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
                 cunit = tuple([leader]+[difull.get(hunit[i][1]) for i in range(4)])
                 typelist = set([int(cunit[i][2]) for i in range(5)])
                 if leader[1] in ttonly and len(typelist) < 3: continue
-                clist.append(cunit)            
+                clist.append(cunit)
         return clist
 
     if zSL1 == 0 or (zSL1 == 1 and zSL2 == 0):
