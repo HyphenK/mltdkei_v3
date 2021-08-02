@@ -97,7 +97,6 @@ def main_idollist(iconext, IDB_name, info_name):
         for i in range(5):
             if ki[i] == 1: kind = kind + k[i]
         if 1 in ki[5:9]:
-            kind = kind + [9]
             for i in range(5, 9):
                 if ki[i] == 1: anni.append(a[i-5])
         leader = []
@@ -133,11 +132,11 @@ def main_idollist(iconext, IDB_name, info_name):
             natural inner join skilldb where rare in {rare} and type in {type} and kind in {kind}
             and centerid in {leader} and skillid in {skill}''').fetchall()
         if len(anni) != 0:
-            for i in len(anni):
+            for i in range(len(anni)):
                 print_list = print_list + cur1.execute(f'''select idnumber, maxrank, photocode from idoldb
                     natural inner join photocodedb natural inner join idoldb_sub natural inner join centerdb
                     natural inner join skilldb where name like {anni[i]} and rare in {rare} and type in {type}
-                    and kind in {kind} and centerid in {leader} and skillid in {skill}''').fetchall()
+                    and centerid in {leader} and skillid in {skill}''').fetchall()
         if "N+" in rare:
             print_list = print_list + cur1.execute('''select idnumber, maxrank, photocode from idoldb
                 natural inner join photocodedb where rare = "N+"''').fetchall()
