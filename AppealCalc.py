@@ -3,7 +3,7 @@ import sqlite3
 from re import findall
 # mltdkei Module #
 from NewProgress import NewProgress
-# AppealCalc for above ver.4.2 21/08/02
+# AppealCalc for above ver.4.2 21/08/05
 
 def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check, mfriend):
     conn1 = sqlite3.connect(IDB_name)

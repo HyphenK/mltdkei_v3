@@ -1,7 +1,7 @@
 # Python Module #
 import sqlite3
 from itertools import combinations
-# MakeUnit for above ver.4.2 21/08/02
+# MakeUnit for above ver.4.2 21/08/05
 
 def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL, zDC, IDB_name):
     conn1 = sqlite3.connect(IDB_name)
