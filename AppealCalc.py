@@ -3,9 +3,9 @@ import sqlite3
 from re import findall
 # mltdkei Module #
 from NewProgress import NewProgress
-# AppealCalc for above ver.4.19 21/08/02
+# AppealCalc for above ver.4.2 21/08/02
 
-def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check):
+def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check, mfriend):
     conn1 = sqlite3.connect(IDB_name)
     cur1 = conn1.cursor()
     NPG = NewProgress()
@@ -109,37 +109,40 @@ def appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, 
 
         # Select Friend
         friend_list = list()
-        try:
-            lcid = lcdict[cunit[0][1]]
-        except:
-            lcid = cur1.execute(f'select centerid from centerdb where idnumber = {cunit[0][1]}').fetchone()[0]
-            lcdict[cunit[0][1]] = lcid
-        if zST == 4:
-            if lcid in cprvo: extract_friend(0, 0, 1)
-            if lcid in cprda: extract_friend(1, 0, 2)
-            if lcid in cprvi: extract_friend(2, 0, 3)
-            if lcid in cfavo: extract_friend(3, 0, 1)
-            if lcid in cfada: extract_friend(4, 0, 2)
-            if lcid in cfavi: extract_friend(5, 0, 3)
-            if lcid in canvo: extract_friend(6, 0, 1)
-            if lcid in canda: extract_friend(7, 0, 2)
-            if lcid in canvi: extract_friend(8, 0, 3)
-            if lcid in c3tvo: extract_friend_c3t(lcid, c3tvo)
-            if lcid in c3tda: extract_friend_c3t(lcid, c3tda)
-            if lcid in c3tvi: extract_friend_c3t(lcid, c3tvi)
+        if mfriend != 0: # total, idnumber, idoltype, skill, vocal, dance, visual
+            friend_list.append(mfriend)
         else:
-            if lcid in cprvo: extract_friend(0, 1, 1)
-            if lcid in cprda: extract_friend(1, 1, 2)
-            if lcid in cprvi: extract_friend(2, 1, 3)
-            if lcid in cfavo: extract_friend(3, 2, 1)
-            if lcid in cfada: extract_friend(4, 2, 2)
-            if lcid in cfavi: extract_friend(5, 2, 3)
-            if lcid in canvo: extract_friend(6, 3, 1)
-            if lcid in canda: extract_friend(7, 3, 2)
-            if lcid in canvi: extract_friend(8, 3, 3)
-            if lcid in c3tvo: extract_friend_c3t(lcid, c3tvo)
-            if lcid in c3tda: extract_friend_c3t(lcid, c3tda)
-            if lcid in c3tvi: extract_friend_c3t(lcid, c3tvi)
+            try:
+                lcid = lcdict[cunit[0][1]]
+            except:
+                lcid = cur1.execute(f'select centerid from centerdb where idnumber = {cunit[0][1]}').fetchone()[0]
+                lcdict[cunit[0][1]] = lcid
+            if zST == 4:
+                if lcid in cprvo: extract_friend(0, 0, 1)
+                if lcid in cprda: extract_friend(1, 0, 2)
+                if lcid in cprvi: extract_friend(2, 0, 3)
+                if lcid in cfavo: extract_friend(3, 0, 1)
+                if lcid in cfada: extract_friend(4, 0, 2)
+                if lcid in cfavi: extract_friend(5, 0, 3)
+                if lcid in canvo: extract_friend(6, 0, 1)
+                if lcid in canda: extract_friend(7, 0, 2)
+                if lcid in canvi: extract_friend(8, 0, 3)
+                if lcid in c3tvo: extract_friend_c3t(lcid, c3tvo)
+                if lcid in c3tda: extract_friend_c3t(lcid, c3tda)
+                if lcid in c3tvi: extract_friend_c3t(lcid, c3tvi)
+            else:
+                if lcid in cprvo: extract_friend(0, 1, 1)
+                if lcid in cprda: extract_friend(1, 1, 2)
+                if lcid in cprvi: extract_friend(2, 1, 3)
+                if lcid in cfavo: extract_friend(3, 2, 1)
+                if lcid in cfada: extract_friend(4, 2, 2)
+                if lcid in cfavi: extract_friend(5, 2, 3)
+                if lcid in canvo: extract_friend(6, 3, 1)
+                if lcid in canda: extract_friend(7, 3, 2)
+                if lcid in canvi: extract_friend(8, 3, 3)
+                if lcid in c3tvo: extract_friend_c3t(lcid, c3tvo)
+                if lcid in c3tda: extract_friend_c3t(lcid, c3tda)
+                if lcid in c3tvi: extract_friend_c3t(lcid, c3tvi)
 
         # Make Support List
         splist = list()

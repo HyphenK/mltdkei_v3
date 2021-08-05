@@ -1,10 +1,9 @@
 # Python Module #
 import sqlite3
 from itertools import combinations
-# MakeUnit for above ver.4.19 21/08/02
+# MakeUnit for above ver.4.2 21/08/02
 
-def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name):
-    tclist = list()
+def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL, zDC, IDB_name):
     conn1 = sqlite3.connect(IDB_name)
     cur1 = conn1.cursor()
     slso = [[231, 222, 213, "prvo"], [234, 225, 216, "prda"], [237, 228, 219, "prvi"],
@@ -36,9 +35,9 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
         l2 = set_leader(ll2, 0) # 95
         ll3 = cur1.execute(f'select idnumber from centerdb where centerid = {slso[i][2]}').fetchall()
         l3 = set_leader(ll3, 0) # 90
-        if zDM >= 6:
+        if zDC == 1:
             l = l1 + l2 + l3
-        else:
+        elif zDC == 0:
             if zST == 4: l = l2 + l1 + l3
             else: l = l1 + l2 + l3
             if len(l) == 0:
@@ -53,9 +52,9 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
         l1 = set_leader(ll1, 0) # 105
         ll2 = cur1.execute(f'select idnumber from centerdb where centerid = {id2}').fetchall()
         l2 = set_leader(ll2, 0) # 105 + 10
-        if zDM >= 6:
+        if zDC == 1:
             l = l1 + l2
-        else:
+        elif zDC == 0:
             if len(l2) != 0: l = l2
             else: l = l1
         return l
@@ -76,30 +75,34 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
                 clist.append(cunit)
         return clist
 
-    if zSL1 == 0 or (zSL1 == 1 and zSL2 == 0):
+    if zSL == 0:
         # Select Leader Idol - Default Auto Mode, Results by zST, zDM
         # Generate Combi by zCB (by make_cunit) // Select by zST, zDM, zDT
-        if zDM == 0 or (zDM == 1 and (zST == 1 or zST == 4)) or zDM == 3 or zDM == 6 or zDM == 9:
-            if zDT == 0 or zDT == 1: tclist = tclist + make_cunit(select_leader(0), hlpr)
-            if zDT == 0 or zDT == 2: tclist = tclist + make_cunit(select_leader(1), hlpr)
-            if zDT == 0 or zDT == 3: tclist = tclist + make_cunit(select_leader(2), hlpr)
-        if zDM == 0 or (zDM == 1 and (zST == 2 or zST == 4)) or zDM == 4 or zDM == 7 or zDM == 9:
-            if zDT == 0 or zDT == 1: tclist = tclist + make_cunit(select_leader(3), hlfa)
-            if zDT == 0 or zDT == 2: tclist = tclist + make_cunit(select_leader(4), hlfa)
-            if zDT == 0 or zDT == 3: tclist = tclist + make_cunit(select_leader(5), hlfa)
-        if zDM == 0 or (zDM == 1 and (zST == 3 or zST == 4)) or zDM == 5 or zDM == 8 or zDM == 9:
-            if zDT == 0 or zDT == 1: tclist = tclist + make_cunit(select_leader(6), hlan)
-            if zDT == 0 or zDT == 2: tclist = tclist + make_cunit(select_leader(7), hlan)
-            if zDT == 0 or zDT == 3: tclist = tclist + make_cunit(select_leader(8), hlan)
-        if zDM == 0 or zDM == 2 or zDM == 9:
-            if zDT == 0 or zDT == 1: tclist = tclist + make_cunit(select_leader_v3t(121, 122), hlall)
-            if zDT == 0 or zDT == 2: tclist = tclist + make_cunit(select_leader_v3t(124, 125), hlall)
-            if zDT == 0 or zDT == 3: tclist = tclist + make_cunit(select_leader_v3t(127, 128), hlall)
+        stlist, ttlist = [], []
+        if zDM in [0, 1, 4] or (zDM == 2 and (zST == 1 or zST == 4)):
+            if zDT == 0 or zDT == 1: stlist = stlist + make_cunit(select_leader(0), hlpr)
+            if zDT == 0 or zDT == 2: stlist = stlist + make_cunit(select_leader(1), hlpr)
+            if zDT == 0 or zDT == 3: stlist = stlist + make_cunit(select_leader(2), hlpr)
+        if zDM in [0, 1, 5] or (zDM == 2 and (zST == 2 or zST == 4)):
+            if zDT == 0 or zDT == 1: stlist = stlist + make_cunit(select_leader(3), hlfa)
+            if zDT == 0 or zDT == 2: stlist = stlist + make_cunit(select_leader(4), hlfa)
+            if zDT == 0 or zDT == 3: stlist = stlist + make_cunit(select_leader(5), hlfa)
+        if zDM in [0, 1, 6] or (zDM == 2 and (zST == 3 or zST == 4)):
+            if zDT == 0 or zDT == 1: stlist = stlist + make_cunit(select_leader(6), hlan)
+            if zDT == 0 or zDT == 2: stlist = stlist + make_cunit(select_leader(7), hlan)
+            if zDT == 0 or zDT == 3: stlist = stlist + make_cunit(select_leader(8), hlan)
+        if zDM in [0, 1, 3]:
+            if zDT == 0 or zDT == 1: ttlist = ttlist + make_cunit(select_leader_v3t(121, 122), hlall)
+            if zDT == 0 or zDT == 2: ttlist = ttlist + make_cunit(select_leader_v3t(124, 125), hlall)
+            if zDT == 0 or zDT == 3: ttlist = ttlist + make_cunit(select_leader_v3t(127, 128), hlall)
+        if zDM != 0: return [stlist + ttlist]
+        elif zDM == 0: return [stlist, ttlist]
 
-    elif zSL1 == 1 and zSL2 != 0:
+    elif zSL != 0:
         # Select Leader Idol - Manual Select Mode
         # make_cunit manual mode
-        leader = zSL2[0]
+        tclist = []
+        leader = zSL
         if leader[1] in ttonly:
             tclist = tclist + make_cunit([leader], hlall)
         else:
@@ -113,4 +116,4 @@ def generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL
                 elif zST == 4: extract_list = [hlpr, hlfa, hlan, hlall]
                 for i in extract_list:
                     tclist = tclist + make_cunit([leader], i)
-    return tclist
+        return [tclist]

@@ -20,13 +20,13 @@ import IdolList
 import MakeUnit
 # mltdkei_mainframe for ver.4.19 21/08/02
 
-def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name, check):
-    temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check)
+def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name, check, friend):
+    temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check, friend)
     result.put(temp_result)
     return
 
-def single_appeal(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check):
-    temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check)
+def single_appeal(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check, friend):
+    temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check, friend)
     return temp_result
 
 def multi_ideal(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_zDI, IDB_name):
@@ -34,7 +34,7 @@ def multi_ideal(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_zDI, I
     result.put(temp_result)
     return
 
-def single_ideal(ntcalc, i1, i2, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
+def single_ideal(ntcalc, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
     temp_result = SimulateCalc.calculator(ntcalc, True, 1, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name)
     return temp_result
 
@@ -49,14 +49,33 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
     root.title("MLTD Deck Analyzer 4.19")
     root.geometry("+80+25")
     root.resizable(False, False)
+    
+    lb_loading = Label(root, text="Loading")
+    lb_loading.grid(row=0, column=0, ipadx=10, ipady=10)
+    
+    def help_open():
+        readme_url = 'https://github.com/HyphenK/mltdkei_v3'
+        webbrowser.open(readme_url, new=1)
+    
+    version = "4.19"
+    try:
+        versioncheck = urlopen("https://raw.githubusercontent.com/HyphenK/mltdkei_v3/v40_main/version_check").read().decode('utf-8')
+        versioncheck = findall('Version (.+)\n', versioncheck)[0]
+        if version != versioncheck:
+            response = msgbox.askyesno("Update Avaliable",
+                f"""New version is avaliable.\nCurrent Version: {version}\nNew Version: {versioncheck}\nDo you want to update now?""")
+            if response == 1: help_open()
+    except:
+        msgbox.showerror("Internet Required", "An Internet Connection is required.")
+        exit()
 
+    lb_loading.destroy()
     conn1 = sqlite3.connect(IDB_name)
     cur1 = conn1.cursor()
     conn2 = sqlite3.connect(MDB_name)
     cur2 = conn2.cursor()
     if IDB_name == 'mltdkei_idoldata.sqlite': matsuri_storage = "https://storage.matsurihi.me/mltd/icon_l/"
     elif IDB_name == 'mltdkei_idoldata_kr.sqlite': matsuri_storage = "https://storage.matsurihi.me/mltd_ko/icon_l/"
-    github_url = "https://raw.githubusercontent.com/HyphenK/mltdkei_v3/v40_main/"
     photodict, songdict, resultdict = dict(), dict(), dict()
     # screen_width = root.winfo_screenwidth()
     # screen_height = root.winfo_screenheight()
@@ -88,7 +107,8 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
     ##### Definition for Extra Setting Window #####
 
     zCB, zIC, zSC, zTC = 20, 2000, 30, 1000
-    zSL1, zSL2, zAH, zAR, zAS, zSF1, zSF2 = 0, 0, 0, 0, 0, 0, 0
+    zAH, zAR, zAS, zDC = 0, 0, 0, 0
+    zMS = [0, 0]
 
     def extra_setting():
         try:
@@ -105,6 +125,55 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
 
         total_all = dict()
         annis, total_anni = ("BRAND NEW PERFORMANCE", "UNI-ONAIR", "CHALLENGE FOR GLOW-RY DAYS", "Reach 4 the Dream"), list()
+        
+        # LeaderSkill CenterID Section
+        # n - Normal
+        # ot - OneType
+        # sb - SongBonus
+        # 3tup - 105% + 10%
+        cg_actup = [201, 202, 301, 302, 401, 402]
+        cg_lifeup = [204, 205, 304, 305, 404, 405]
+        cg_allup = [111, 207, 208, 209, 307, 308, 309, 407, 408, 409]
+        cg_voup_n = [211, 212, 213, 311, 312, 313, 411, 412, 413]
+        cg_voup_ot = [221, 222, 321, 322, 421, 422]
+        cg_voup_sb = [231, 331, 431]
+        cg_voup_3tn = [121]
+        cg_voup_3tup = [122]
+        cg_daup_n = [214, 215, 216, 314, 315, 316, 414, 415, 416]
+        cg_daup_ot = [224, 225, 324, 325, 424, 425]
+        cg_daup_sb = [234, 334, 434]
+        cg_daup_3tn = [124]
+        cg_daup_3tup = [125]
+        cg_viup_n = [217, 218, 219, 317, 318, 319, 417, 418, 419]
+        cg_viup_ot = [227, 228, 327, 328, 427, 428]
+        cg_viup_sb = [237, 337, 437]
+        cg_viup_3tn = [127]
+        cg_viup_3tup = [128]
+        cglist = [[0], cg_voup_n, cg_voup_ot, cg_voup_sb, cg_voup_3tn, cg_voup_3tup,
+                  cg_daup_n, cg_daup_ot, cg_daup_sb, cg_daup_3tn, cg_daup_3tup,
+                  cg_viup_n, cg_viup_ot, cg_viup_sb, cg_viup_3tn, cg_viup_3tup,
+                  cg_allup, cg_lifeup, cg_actup, [101]]
+        cgtext = ["All Skills", "Vocal-Normal", "Vocal-OneType", "Vocal-SongBonus", "Vocal-3Type", "Vocal-3Type+SkillAct",
+                  "Dance-Normal", "Dance-OneType", "Dance-SongBonus", "Dance-3Type", "Dance-3Type+SkillAct",
+                  "Visual-Normal", "Visual-OneType", "Visual-SongBonus", "Visual-3Type", "Visual-3Type+SkillAct",
+                  "All-Normal", "LifeUp", "SkillAct", "NoSkill"]
+
+        # IdolSkill SkillID Info
+        # 1, 2, 3 - Perfect Support
+        # 5 - Damage Guard
+        # 6 - Life Plus
+        # 7 - Combo Support
+        # 10, 11 - Score
+        # 12, 13 - Overclock
+        # 14, 15, 24, 25 - Multi Up
+        # 20, 21 - Combo
+        # 22, 23 - Overrondo
+        # 30, 31 - Double Boost
+        # 34 - Double Effect
+        sklist = [[100], [10, 11], [20, 21], [30, 31], [14, 15, 24, 25], [12, 13], [22, 23], [34],
+                  [1, 2, 3], [5], [6], [7], [0]]
+        sktext = ["All Skills", "Score Up", "Combo Up", "Double Boost", "Multi Up", "OverClock", "OverRondo", "Double Effect",
+                  "Perfect Support", "Damage Guard", "Life Plus", "Combo Support", "No Skill"]
 
         for idolinfo in infodata_sldm: # 1,N+,天海春香,0,0,1
             if idolinfo == '': continue
@@ -115,36 +184,29 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
                 if anni in idolinfo[2]:
                     total_anni.append(idolinfo[0])
 
-        nonlocal zCB, zIC, zSC, zTC, zSL1, zSL2, zAH, zAR, zAS
-        cbnhave, cbnssr, cbnsr, cbnr, cbnn, cbnanni = IntVar(), IntVar(), IntVar(), IntVar(), IntVar(), IntVar()
-        cbnssr.set(1)
+        nonlocal zCB, zIC, zSC, zTC, zAH, zAR, zAS, zDC, zMS
+        cbnlist = [IntVar() for i in range(6)]
+        cbnlist[1].set(1)
 
         def save_thing(inputed, fromwhere):
             nonlocal zCB, zIC, zSC, zTC
-            if inputed == "zCB": zCB = int(fromwhere.get())
-            if inputed == "zIC": zIC = int(fromwhere.get())
-            if inputed == "zSC": zSC = int(fromwhere.get())
-            if inputed == "zTC": zTC = int(fromwhere.get())
+            if inputed == "zCB":
+                zCB = int(fromwhere.get())
+            if inputed == "zIC":
+                zIC = fromwhere.get()
+            if inputed == "zSC":
+                zSC = int(fromwhere.get())
+            if inputed == "zTC":
+                zTC = int(fromwhere.get())
             cbxPS.set("Manual")
 
         def save_zA(inputed, fromwhere, whereget):
-            nonlocal zAH, zAR, zAS
+            nonlocal zAH, zAR, zAS, zDC
             if inputed == "zAH": zAH = fromwhere.index(whereget.get())
             if inputed == "zAR": zAR = fromwhere.index(whereget.get())
             if inputed == "zAS": zAS = fromwhere.index(whereget.get())
+            if inputed == "zDC": zDC = fromwhere.index(whereget.get())
             cbxPS.set("Manual")
-
-        def save_zSL1(unused_option):
-            nonlocal zSL1
-            zSL1 = SLvalues.index(cbx_SL.get())
-            if zSL1 == 0:
-                cbx_SLidol.config(state="disabled")
-                cbx_SLcenter.config(state="disabled")
-            elif zSL1 == 1:
-                cbx_SLidol.config(state="readonly")
-                cbx_SLcenter.config(state="readonly")
-            cbxPS.set("Manual")
-            ext_root.update()
 
         def apcalc2(data, have, mr, r):
             appeal = findall('[0-9]+', data)
@@ -153,24 +215,10 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
             elif have == 0: answer = a1
             return int(answer)
 
-        def print_center(inputed_zSL2): # total, idnumber, idoltype, skill, vocal, dance, visual
-            info = cur1.execute(f'''select rare, photocode, center from IdolDB natural inner join PhotoCodeDB
-                natural inner join CenterDB natural inner join CenterStorage where idnumber = {inputed_zSL2[0][1]}''').fetchone()
-            photoinfo = iconext(inputed_zSL2[0][1], info[1], 48)
-            lb_SLphoto.config(image=photoinfo)
-            lb_SLphoto.image = photoinfo
-            if inputed_zSL2[1][2] == 1: lb_SLhave.config(text="Have")
-            lb_SLnumber.config(text="".join(["★", str(inputed_zSL2[1][1])]))
-            lb_SLinfo.config(text=" ".join(["Vo:", str(inputed_zSL2[0][4]),
-                "Da:", str(inputed_zSL2[0][5]), "Vi:", str(inputed_zSL2[0][6])]))
-            lb_SLrare.config(text=info[0])
-            lb_SLcenteri.config(text=info[2])
-            ext_root.update()
-
         def set_leader_manual(inputed_list):
             nonlocal sldm_container
             lb_SLloading = Label(cv_extd, text="Now Loading...")
-            lb_SLloading.place(x=0, y=50, width=568, height=75)
+            lb_SLloading.place(x=0, y=75, width=568, height=50)
 
             sldm_container.destroy()
             sldm_container = Frame(ext_root)
@@ -190,7 +238,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
             ext_root.update()
             rowcount = 0
 
-            printgo = cbnhave.get(), cbnssr.get(), cbnsr.get(), cbnr.get(), cbnn.get()
+            printgo = [i.get() for i in cbnlist[0:5]]
             printrank = list()
             if printgo[1] == 1: printrank.append("SSR+")
             if printgo[2] == 1: printrank.append("SR+")
@@ -198,7 +246,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
             if printgo[4] == 1: printrank.append("N+")
 
             def set_leader_manual_print(inputed_infos, inputed_row):
-                if cbnanni.get() == 1 and str(inputed_infos[0]) in total_anni:
+                if cbnlist[5].get() == 1 and str(inputed_infos[0]) in total_anni:
                     pass
                 else:
                     if inputed_infos[2] not in printrank: return
@@ -210,26 +258,8 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
                 lb_photoinfo = Label(infoframe, image=photoinfo)
                 lb_photoinfo.image = photoinfo
                 lb_photoinfo.place(x=0, y=0, width=50, height=50)
-
-                def save_zSL2():
-                    nonlocal zSL2
-                    leaderdata = cur1.execute(f'''select type, vocal, dance, visual, total, maxrank, maxlevel from IdolDB
-                        natural inner join SkillDB where idnumber = "{inputed_infos[0]}"''').fetchone()
-                    idnumber, idoltype, maxrank, skill = str(inputed_infos[0]), int(leaderdata[0]), int(leaderdata[5]), int(leaderdata[6])
-                    try:
-                        haverank = total_all[idnumber]
-                        have = 1
-                    except:
-                        haverank = maxrank
-                        have = 0
-                    vocal = apcalc2(leaderdata[1], have, maxrank, haverank)
-                    dance = apcalc2(leaderdata[2], have, maxrank, haverank)
-                    visual = apcalc2(leaderdata[3], have, maxrank, haverank)
-                    total = apcalc2(leaderdata[4], have, maxrank, haverank)
-                    zSL2 = [[total, idnumber, idoltype, skill, vocal, dance, visual], [maxrank, haverank, have], leaderdata[1:5]]
-                    print_center(zSL2)
-
-                btn_SLconfig = Button(infoframe, text="Select", command=save_zSL2)
+                
+                btn_SLconfig = Button(infoframe, text="Select", command=lambda: NTlist[notebook.index('current')].load_target(inputed_infos))
                 btn_SLconfig.place(x=50, y=0, width=49, height=24)
 
                 lb_idolhave = Label(infoframe, text="--", borderwidth=2, relief="groove", bg="white")
@@ -242,12 +272,25 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
                 lb_idolnumber = Label(infoframe, text="".join(["Max★", str(inputed_infos[3])]), borderwidth=2, relief="groove", bg="white")
                 lb_idolnumber.place(x=200, y=0, width=50, height=25)
 
-                idolinfo_text = " ".join(["Vo:", inputed_infos[4].replace(" ", ""), "Da:", inputed_infos[5].replace(" ", ""), "Vi:", inputed_infos[6].replace(" ", "")])
+                idolinfo_text = " ".join(["Vo:", inputed_infos[4].replace(" ", ""), "Da:",
+                    inputed_infos[5].replace(" ", ""), "Vi:", inputed_infos[6].replace(" ", "")])
                 lb_idolinfo = Label(infoframe, text=idolinfo_text, borderwidth=2, relief="groove", bg="white")
                 lb_idolinfo.place(x=250, y=0, width=300, height=25)
-
-                lb_idolcenter = Label(infoframe, text=inputed_infos[7], borderwidth=2, relief="groove", bg="white")
-                lb_idolcenter.place(x=50, y=25, width=500, height=25)
+                
+                lb_idolcenter = Label(infoframe, borderwidth=2, relief="groove", bg="white")
+                lb_idolcenter.place(x=50, y=25, width=250, height=25)
+                
+                lb_idolskill = Label(infoframe, borderwidth=2, relief="groove", bg="white")
+                lb_idolskill.place(x=300, y=25, width=250, height=25)
+                
+                for i in range(len(cglist)):
+                    if inputed_infos[7] in cglist[i]:
+                        lb_idolcenter.config(text=cgtext[i])
+                        break
+                for i in range(len(sklist)):
+                    if inputed_infos[8] in sklist[i]:
+                        lb_idolskill.config(text=sktext[i])
+                        break
 
                 ext_root.update()
 
@@ -258,43 +301,16 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
             lb_SLloading.destroy()
             ext_root.update()
 
-        def set_leader_byidol(unused_option):
-            SLbyidollist = cur1.execute(f'''select idnumber, photocode, rare, maxrank, vocal, dance, visual, center
-                from IdolDB natural inner join PhotoCodeDB natural inner join CenterDB
-                natural inner join CenterStorage where name like "%{cbx_SLidol.get()}"''').fetchall()
-            set_leader_manual(SLbyidollist)
-
-        def set_leader_bycenter(unused_option):
-            SLbycenterlist = cur1.execute(f'''select idnumber, photocode, rare, maxrank, vocal, dance, visual, center
-            from IdolDB natural inner join PhotoCodeDB natural inner join CenterDB
-                natural inner join CenterStorage where center = "{cbx_SLcenter.get()}"''').fetchall()
-            set_leader_manual(SLbycenterlist)
-
-        def leader_reset():
-            nonlocal zSL2
-            zSL2 = 0
-            lb_SLphoto.config(image='')
-            lb_SLnumber.config(text="--")
-            lb_SLrare.config(text='--')
-            lb_SLinfo.config(text='')
-            lb_SLhave.config(text="--")
-            lb_SLcenteri.config(text='')
-            ext_root.update()
-
-        def leader_config(option):
-            nonlocal zSL2
-            if zSL2 == 0: return
-            maxrank, haverank, option = int(zSL2[1][0]), int(zSL2[1][1]), int(option)
-            if option == 0: haverank = maxrank
-            else: haverank = haverank + option
-            if maxrank < haverank or haverank < 0: return
-            vocal = apcalc2(zSL2[2][0], 1, maxrank, haverank)
-            dance = apcalc2(zSL2[2][1], 1, maxrank, haverank)
-            visual = apcalc2(zSL2[2][2], 1, maxrank, haverank)
-            total = apcalc2(zSL2[2][3], 1, maxrank, haverank)
-            zSL2[0] = [total, zSL2[0][1], zSL2[0][2], zSL2[0][3], vocal, dance, visual]
-            zSL2[1] = [maxrank, haverank, zSL2[1][2]]
-            print_center(zSL2)
+        def set_leader():
+            if cgtext.index(cbx_SLcenter.get()) == 0: cg = tuple([i for j in cglist for i in j])
+            else: cg = tuple([0]+cglist[cgtext.index(cbx_SLcenter.get())])
+            if sktext.index(cbx_SLskill.get()) == 0: sk = tuple([i for j in sklist for i in j])
+            else: sk = tuple([100]+sklist[sktext.index(cbx_SLskill.get())])
+            SL = cur1.execute(f'''select idnumber, photocode, rare, maxrank, vocal, dance, visual, centerid, skillid
+                from IdolDB natural inner join PhotoCodeDB natural inner join CenterDB natural inner join SkillDB
+                natural inner join CenterStorage where name like "%{cbx_SLidol.get()}"
+                and centerid in {cg} and skillid in {sk}''').fetchall()
+            set_leader_manual(SL)
 
         cv_extu = Label(ext_root, borderwidth=2, relief="groove")
         cv_extu.grid(row=0, column=0)
@@ -303,163 +319,240 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
         txCB.grid(row=0, column=0, sticky=E+W)
 
         CBvalues = [10*i for i in range(2, 8)]
-        cbxCB = ttk.Combobox(cv_extu, width=8, height=6, values=CBvalues, state="readonly")
+        cbxCB = ttk.Combobox(cv_extu, width=6, height=6, values=CBvalues, state="readonly")
         cbxCB.grid(row=0, column=1)
         cbxCB.set(zCB)
         cbxCB.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zCB", cbxCB))
+        
+        txIC = Label(cv_extu, text="Ideal Calc")
+        txIC.grid(row=0, column=2, sticky=E+W)
+
+        ICvalues = ["All", 1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000]
+        cbxIC = ttk.Combobox(cv_extu, width=6, height=10, values=ICvalues, state="readonly")
+        cbxIC.grid(row=0, column=3)
+        cbxIC.set(zIC)
+        cbxIC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zIC", cbxIC))
 
         txSC = Label(cv_extu, text="Score Calc")
-        txSC.grid(row=1, column=0, sticky=E+W)
+        txSC.grid(row=0, column=4, sticky=E+W)
 
-        SCvalues = [10, 20, 30, 50, 75, 100, 150, 200]
-        cbxSC = ttk.Combobox(cv_extu, width=8, height=8, values=SCvalues, state="readonly")
-        cbxSC.grid(row=1, column=1)
+        SCvalues = [10, 20, 30, 50, 80, 100, 150, 200]
+        cbxSC = ttk.Combobox(cv_extu, width=6, height=8, values=SCvalues, state="readonly")
+        cbxSC.grid(row=0, column=5)
         cbxSC.set(zSC)
         cbxSC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zSC", cbxSC))
 
         txTC = Label(cv_extu, text="Time of Calc")
-        txTC.grid(row=2, column=0, sticky=E+W)
+        txTC.grid(row=0, column=6, sticky=E+W)
 
         TCvalues = [1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000]
-        cbxTC = ttk.Combobox(cv_extu, width=8, height=9, values=TCvalues, state="readonly")
-        cbxTC.grid(row=2, column=1)
+        cbxTC = ttk.Combobox(cv_extu, width=6, height=9, values=TCvalues, state="readonly")
+        cbxTC.grid(row=0, column=7)
         cbxTC.set(zTC)
         cbxTC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zTC", cbxTC))
 
-        lb_AH = Label(cv_extu, text="Calc With All Idol")
-        lb_AH.grid(row=0, column=2, sticky=E+W)
+        lb_AH = Label(cv_extu, text="All Idols")
+        lb_AH.grid(row=1, column=0, sticky=E+W)
 
         AHvalues = ["Disable", "Enable"]
-        cbx_AH = ttk.Combobox(cv_extu, width=8, height=2, values=AHvalues, state="readonly")
-        cbx_AH.grid(row=0, column=3)
+        cbx_AH = ttk.Combobox(cv_extu, width=6, height=2, values=AHvalues, state="readonly")
+        cbx_AH.grid(row=1, column=1)
         cbx_AH.set(AHvalues[zAH])
         cbx_AH.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAH", AHvalues, cbx_AH))
 
-        lb_AR = Label(cv_extu, text="Set Star Rank as")
+        lb_AR = Label(cv_extu, text=" All Star Rank ")
         lb_AR.grid(row=1, column=2, sticky=E+W)
 
         ARvalues = ["Default", "★0", "★MAX"]
-        cbx_AR = ttk.Combobox(cv_extu, width=8, height=3, values=ARvalues, state="readonly")
+        cbx_AR = ttk.Combobox(cv_extu, width=6, height=3, values=ARvalues, state="readonly")
         cbx_AR.grid(row=1, column=3)
         cbx_AR.set(ARvalues[zAR])
         cbx_AR.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAR", ARvalues, cbx_AR))
 
-        lb_AS = Label(cv_extu, text="Set Skill Level as")
-        lb_AS.grid(row=2, column=2, sticky=E+W)
+        lb_AS = Label(cv_extu, text=" All Skill Level ")
+        lb_AS.grid(row=1, column=4, sticky=E+W)
 
         ASvalues = ["Default", "Lv1", "LvMAX"]
-        cbx_AS = ttk.Combobox(cv_extu, width=8, height=3, values=ASvalues, state="readonly")
-        cbx_AS.grid(row=2, column=3)
+        cbx_AS = ttk.Combobox(cv_extu, width=6, height=3, values=ASvalues, state="readonly")
+        cbx_AS.grid(row=1, column=5)
         cbx_AS.set(ASvalues[zAS])
         cbx_AS.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zAS", ASvalues, cbx_AS))
+
+        lb_SL = Label(cv_extu, text="Deep Calc")
+        lb_SL.grid(row=1, column=6, sticky=E+W)
+
+        DCvalues = ["Disable", "Enable"]
+        cbx_DC = ttk.Combobox(cv_extu, width=6, height=2, values=DCvalues, state="readonly")
+        cbx_DC.grid(row=1, column=7)
+        cbx_DC.set(DCvalues[zDC])
+        cbx_DC.bind("<<ComboboxSelected>>", lambda unused_option: save_zA("zDC", DCvalues, cbx_DC))
         
-        txIC = Label(cv_extu, text="Ideal Calc (0: Calc All)")
-        txIC.grid(row=0, column=4, sticky=E+W)
-
-        ICvalues = [0, 1000, 2000, 3000, 5000, 10000, 20000, 30000, 50000, 100000]
-        cbxIC = ttk.Combobox(cv_extu, width=8, height=10, values=ICvalues, state="readonly")
-        cbxIC.grid(row=0, column=5)
-        cbxIC.set(zIC)
-        cbxIC.bind("<<ComboboxSelected>>", lambda unused_option: save_thing("zIC", cbxIC))
-
-        lb_SL = Label(cv_extu, text="Manual Leader Select")
-        lb_SL.grid(row=1, column=4, sticky=E+W)
-
-        SLvalues = ["Disable", "Enable"]
-        cbx_SL = ttk.Combobox(cv_extu, width=8, height=2, values=SLvalues, state="readonly")
-        cbx_SL.grid(row=1, column=5)
-        cbx_SL.set(SLvalues[zSL1])
-        cbx_SL.bind("<<ComboboxSelected>>", save_zSL1)
-        
-        lb_SF = Label(cv_extu, text="Manual Friend Select")
-        lb_SF.grid(row=2, column=4, sticky=E+W)
-
-        SFvalues = ["Disable", "Enable"]
-        cbx_SF = ttk.Combobox(cv_extu, width=8, height=2, values=SFvalues, state="disabled")
-        cbx_SF.grid(row=2, column=5)
-        cbx_SF.set(SFvalues[zSF1])
-        cbx_SF.bind("<<ComboboxSelected>>", save_zSL1)
-
         cv_extd = Frame(ext_root, width=572, height=129, borderwidth=2, relief="groove")
         cv_extd.grid(row=1, column=0)
+        
+        ##### Notebook - Manual Selection Area #####
+        
+        notebook = ttk.Notebook(cv_extd)
+        notebook.place(x=0, y=0, width=568, height=75)
+        notebook.bind("<<NotebookTabChanged>>", lambda e: NTlist[notebook.index('current')].print_target())
 
-        lb_SLphoto = Label(cv_extd, borderwidth=2, relief="groove", bg="white")
-        lb_SLphoto.place(x=0, y=0, width=50, height=50)
+        class NotebookFrame:
+            def __init__(self, target):
+                self.target = target
+            
+            def make_frame(self, name, notebook):
+                self.NTframe = Frame(cv_extd)
+                notebook.add(self.NTframe, text=f"         {name}         ")
+                
+                self.lb_SLphoto = Label(self.NTframe, borderwidth=2, relief="groove", bg="white")
+                self.lb_SLphoto.place(x=0, y=0, width=50, height=50)
 
-        btn_SLreset = Button(cv_extd, text="Reset", command=leader_reset)
-        btn_SLreset.place(x=50, y=0, width=49, height=24)
+                self.btn_SLreset = Button(self.NTframe, text="Reset", command=self.reset_data)
+                self.btn_SLreset.place(x=50, y=0, width=49, height=24)
 
-        lb_SLhave = Label(cv_extd, text="--", borderwidth=2, relief="groove", bg="white")
-        lb_SLhave.place(x=100, y=0, width=50, height=25)
+                self.lb_SLhave = Label(self.NTframe, text="--", borderwidth=2, relief="groove", bg="white")
+                self.lb_SLhave.place(x=100, y=0, width=50, height=25)
 
-        lb_SLrare = Label(cv_extd, text="--", borderwidth=2, relief="groove", bg="white")
-        lb_SLrare.place(x=150, y=0, width=50, height=25)
+                self.lb_SLrare = Label(self.NTframe, text="--", borderwidth=2, relief="groove", bg="white")
+                self.lb_SLrare.place(x=150, y=0, width=50, height=25)
 
-        lb_SLnumber = Label(cv_extd, text="--", borderwidth=2, relief="groove", bg="white")
-        lb_SLnumber.place(x=200, y=0, width=50, height=25)
+                self.lb_SLnumber = Label(self.NTframe, text="--", borderwidth=2, relief="groove", bg="white")
+                self.lb_SLnumber.place(x=200, y=0, width=50, height=25)
 
-        lb_SLinfo = Label(cv_extd, borderwidth=2, relief="groove", bg="white")
-        lb_SLinfo.place(x=250, y=0, width=228, height=25)
+                self.lb_SLinfo = Label(self.NTframe, borderwidth=2, relief="groove", bg="white")
+                self.lb_SLinfo.place(x=250, y=0, width=224, height=25)
 
-        btn_up = Button(cv_extd, text="▲", command=lambda: leader_config(1))
-        btn_up.place(x=478, y=0, width=30, height=25)
+                self.btn_up = Button(self.NTframe, text="▲", command=lambda: self.target_config(1))
+                self.btn_up.place(x=474, y=0, width=30, height=25)
 
-        btn_down = Button(cv_extd, text="▼", command=lambda: leader_config(-1))
-        btn_down.place(x=508, y=0, width=30, height=25)
+                self.btn_down = Button(self.NTframe, text="▼", command=lambda: self.target_config(-1))
+                self.btn_down.place(x=504, y=0, width=30, height=25)
 
-        btn_reset = Button(cv_extd, text="R", command=lambda: leader_config(0))
-        btn_reset.place(x=538, y=0, width=30, height=25)
+                self.btn_reset = Button(self.NTframe, text="R", command=lambda: self.target_config(0))
+                self.btn_reset.place(x=534, y=0, width=30, height=25)
 
-        lb_SLcenteri = Label(cv_extd, borderwidth=2, relief="groove", bg="white")
-        lb_SLcenteri.place(x=50, y=25, width=518, height=25)
+                self.lb_SLcg = Label(self.NTframe, borderwidth=2, relief="groove", bg="white")
+                self.lb_SLcg.place(x=50, y=25, width=257, height=25)
+                
+                self.lb_SLsk = Label(self.NTframe, borderwidth=2, relief="groove", bg="white")
+                self.lb_SLsk.place(x=307, y=25, width=257, height=25)
 
-        if zSL2 != 0: print_center(zSL2)
-
-        lb_SLoption = Label(cv_extd, text="Option")
-        lb_SLoption.place(x=0, y=50, width=110, height=25)
-
-        cv_cbn = Frame(cv_extd)
-        cv_cbn.place(x=110, y=50, width=458, height=25)
-
-        cbn_have = Checkbutton(cv_cbn, text="Have", variable=cbnhave)
-        cbn_have.grid(row=0, column=0)
-
-        cbn_ssr = Checkbutton(cv_cbn, text="SSR", variable=cbnssr)
-        cbn_ssr.grid(row=0, column=1)
-
-        cbn_sr = Checkbutton(cv_cbn, text="SR", variable=cbnsr)
-        cbn_sr.grid(row=0, column=2)
-
-        cbn_r = Checkbutton(cv_cbn, text="R", variable=cbnr)
-        cbn_r.grid(row=0, column=3)
-
-        cbn_n = Checkbutton(cv_cbn, text="N", variable=cbnn)
-        cbn_n.grid(row=0, column=4)
-
-        cbn_anni = Checkbutton(cv_cbn, text="Anniversary", variable=cbnanni)
-        cbn_anni.grid(row=0, column=5)
-
-        lb_SLidol = Label(cv_extd, text="Select by Idol")
-        lb_SLidol.place(x=0, y=75, width=110, height=25)
-
-        lb_SLcenter = Label(cv_extd, text="Select by Center Skill")
-        lb_SLcenter.place(x=110, y=75, width=458, height=25)
-
+                self.print_target()
+                
+            def reset_data(self):
+                self.target = 0
+                self.lb_SLphoto.config(image='', borderwidth=2, relief="groove")
+                self.lb_SLnumber.config(text="--")
+                self.lb_SLrare.config(text='--')
+                self.lb_SLinfo.config(text='')
+                self.lb_SLhave.config(text="--")
+                self.lb_SLcg.config(text='')
+                self.lb_SLsk.config(text='')
+                zMS[notebook.index('current')] = self.target
+                ext_root.update()
+                
+            def print_target(self): # total, idnumber, idoltype, skill, vocal, dance, visual
+                if self.target == 0: return
+                info = cur1.execute(f'''select rare, photocode, centerid, skillid from IdolDB natural inner join PhotoCodeDB
+                    natural inner join CenterDB natural inner join SkillDB natural inner join CenterStorage
+                    where idnumber = {self.target[0][1]}''').fetchone()
+                photoinfo = iconext(self.target[0][1], info[1], 48)
+                self.lb_SLphoto.config(image=photoinfo, relief="flat")
+                self.lb_SLphoto.image = photoinfo
+                if self.target[1][2] == 1: self.lb_SLhave.config(text="Have")
+                self.lb_SLnumber.config(text="".join(["★", str(self.target[1][1])]))
+                self.lb_SLinfo.config(text=" ".join(["Vo:", str(self.target[0][4]),
+                    "Da:", str(self.target[0][5]), "Vi:", str(self.target[0][6])]))
+                self.lb_SLrare.config(text=info[0])
+                cgid, skid = int(info[2]), int(info[3])
+                for i in range(len(cglist)):
+                    if cgid in cglist[i]:
+                        self.lb_SLcg.config(text=cgtext[i])
+                        break
+                for i in range(len(sklist)):
+                    if skid in sklist[i]:
+                        self.lb_SLsk.config(text=sktext[i])
+                        break
+                zMS[notebook.index('current')] = self.target
+                ext_root.update()
+                
+            def load_target(self, inputed_infos):
+                leaderdata = cur1.execute(f'''select type, vocal, dance, visual, total, maxrank, maxlevel from IdolDB
+                    natural inner join SkillDB where idnumber = "{inputed_infos[0]}"''').fetchone()
+                idnumber, idoltype, maxrank, skill = str(inputed_infos[0]), int(leaderdata[0]), int(leaderdata[5]), int(leaderdata[6])
+                try: haverank, have = total_all[idnumber], 1
+                except: haverank, have = maxrank, 0
+                vocal = apcalc2(leaderdata[1], have, maxrank, haverank)
+                dance = apcalc2(leaderdata[2], have, maxrank, haverank)
+                visual = apcalc2(leaderdata[3], have, maxrank, haverank)
+                total = apcalc2(leaderdata[4], have, maxrank, haverank)
+                self.target = [[total, idnumber, idoltype, skill, vocal, dance, visual], [maxrank, haverank, have], leaderdata[1:5]]
+                self.print_target()
+                
+            def target_config(self, option):
+                if self.target == 0: return
+                maxrank, haverank, option = int(self.target[1][0]), int(self.target[1][1]), int(option)
+                if option == 0: haverank = maxrank
+                else: haverank = haverank + option
+                if maxrank < haverank or haverank < 0: return
+                vocal = apcalc2(self.target[2][0], 1, maxrank, haverank)
+                dance = apcalc2(self.target[2][1], 1, maxrank, haverank)
+                visual = apcalc2(self.target[2][2], 1, maxrank, haverank)
+                total = apcalc2(self.target[2][3], 1, maxrank, haverank)
+                self.target[0] = [total, self.target[0][1], self.target[0][2], self.target[0][3], vocal, dance, visual]
+                self.target[1] = [maxrank, haverank, self.target[1][2]]
+                self.print_target()
+        
+        NTframeL = NotebookFrame(zMS[0])
+        NTframeL.make_frame("Leader", notebook)
+        
+        NTframeF = NotebookFrame(zMS[1])
+        NTframeF.make_frame("Friend", notebook)
+        
+        NTlist = [NTframeL, NTframeF]
+        
+        cv_extop = Frame(cv_extd)
+        cv_extop.place(x=0, y=75, width=568, height=50)
+        
+        cv_extl1 = Frame(cv_extop)
+        cv_extl1.grid(row=0, column=0)
+        
+        lb_SLidol = Label(cv_extl1, text=" Idol Name ")
+        lb_SLidol.grid(row=0, column=0, sticky=N+S)
+        
         SL_idol = cur1.execute('select name from TypeStorage').fetchall()
         SLbyidol = [SL_idol[i][0] for i in range(0, len(SL_idol))]
-        cbx_SLidol = ttk.Combobox(cv_extd, height=13, values=SLbyidol, state="readonly")
-        if zSL1 == 0: cbx_SLidol.config(state="disabled")
-        cbx_SLidol.place(x=0, y=100, width=109, height=24)
+        cbx_SLidol = ttk.Combobox(cv_extl1, width=16, height=13, values=SLbyidol, state="readonly")
+        cbx_SLidol.grid(row=0, column=1)
         cbx_SLidol.set("Select")
-        cbx_SLidol.bind("<<ComboboxSelected>>", set_leader_byidol)
 
-        SL_center = cur1.execute('select center from CenterStorage').fetchall()
-        SLbycenter = [SL_center[i][0] for i in range(0, len(SL_center))]
-        cbx_SLcenter = ttk.Combobox(cv_extd, height=13, values=SLbycenter, state="readonly")
-        if zSL1 == 0: cbx_SLcenter.config(state="disabled")
-        cbx_SLcenter.place(x=110, y=100, width=457, height=24)
-        cbx_SLcenter.set("Select")
-        cbx_SLcenter.bind("<<ComboboxSelected>>", set_leader_bycenter)
+        lb_SLct = Label(cv_extl1, text=" Category ")
+        lb_SLct.grid(row=0, column=2)
+        
+        cbntext = ["Have", "SSR", "SR", "R", "N", "Anniv."]
+        for i in range(6):
+            cbn = Checkbutton(cv_extl1, text=cbntext[i], variable=cbnlist[i])
+            cbn.grid(row=0, column=i+3)
+            
+        cv_extl2 = Frame(cv_extop)
+        cv_extl2.grid(row=1, column=0)
+
+        lb_SLcenter = Label(cv_extl2, text=" Center Skill ")
+        lb_SLcenter.grid(row=0, column=0, sticky=N+S)
+
+        cbx_SLcenter = ttk.Combobox(cv_extl2, width=20, height=20, values=cgtext, state="readonly")
+        cbx_SLcenter.grid(row=0, column=1)
+        cbx_SLcenter.set("All Skills")
+        
+        lb_SLskill = Label(cv_extl2, text=" Idol Skill ")
+        lb_SLskill.grid(row=0, column=2, sticky=N+S)
+
+        cbx_SLskill = ttk.Combobox(cv_extl2, width=15, height=13, values=sktext, state="readonly")
+        cbx_SLskill.grid(row=0, column=3)
+        cbx_SLskill.set("All Skills")
+        
+        btn_load = Button(cv_extl2, text="Load Info", width=15, command=set_leader)
+        btn_load.grid(row=0, column=4, padx=5)
 
         sldm_container = Frame(ext_root)
         sldm_container.grid(row=2, column=0)
@@ -521,7 +614,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
         zDM = DMvalues.index(cbxDM.get())
         zDT = DTvalues.index(cbxDT.get())
         zOB = OBvalues.index(cbxOB.get())
-        nonlocal zCB, zIC, zSC, zTC, zSL1, zSL2, zAH, zAR, zAS
+        nonlocal zCB, zIC, zSC, zTC, zAH, zAR, zAS, zDC, zMS
 
         if zDI == 6 and zSN != 124:
             open_setting()
@@ -606,73 +699,90 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
             hidol = tuple(hidol)
             temp_splist.append(hidol)
         temp_splist.sort(reverse=True)
+        
+        zMSd = []
+        for i in range(len(zMS)):
+            try: zMSd.append(zMS[i][0])
+            except: zMSd.append(0)
 
-        tclist = MakeUnit.generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zSL1, zSL2, IDB_name)
+        tclist2 = MakeUnit.generate_deck(difull, hlall, hlpr, hlfa, hlan, zST, zDM, zDT, zCB, zMSd[0], zDC, IDB_name)
+        tclen = len(tclist2)
 
-        if len(tclist) == 0:
+        if len(tclist2[0]) == 0:
             open_setting()
-            msgbox.showinfo('Error', '''Analyzer can't make any deck under this option.\nPlease check your Idol List or use higher combination / legacy deck making option.''')
+            msgbox.showinfo('Error', '''Analyzer can't make any deck under this option.\nPlease check your Idol List or use higher "Using Idols" option.''')
             return
 
         process_make = process_count//2
-
-        for check in [1, 0]:
-            if pypy == 0:
-                tclist = [tclist[(i*len(tclist))//process_make:((i+1)*len(tclist))//process_make] for i in range(process_make)]
-                # Bug Appeared. Need to investigate deeper.
-                # Issue #2 - Error on second tclist when card is not enough to make deck
-                for i in range(len(tclist)):
-                    if len(tclist[i]) == 1: tclist[i] = tclist[i][0]
-                # Temp Bug Fix Part End
-                tc_queue = Manager().Queue()
-                process_list = []
-                for i in range(process_make):
-                    process = Process(target=multi_appeal, args=(i+1, tc_queue, tclist[i], temp_splist, zST, difull, zLT, IDB_name, check))
-                    process_list.append(process)
-                    process.start()
-                for process in process_list:
-                    process.join()
-                qsize = tc_queue.qsize()
-                while qsize > 0:
-                    iclist = iclist + tc_queue.get()
-                    qsize = qsize - 1
-            elif pypy == 1:
-                iclist = single_appeal(tclist, temp_splist, zST, difull, zLT, 1, IDB_name, check)
-            if len(iclist) != 0: break
         
-        iclist.sort(reverse=True)
-        if len(iclist) == 0: print("Warning: IC 0")
-        if zIC != 0: iclist = iclist[0:zIC]
+        iclist2 = []
+        for i in range(tclen):
+            tclist = tclist2[i]
+            iclist = []
+            for check in [1, 0]:
+                if pypy == 0:
+                    tclist = [tclist[(i*len(tclist))//process_make:((i+1)*len(tclist))//process_make] for i in range(process_make)]
+                    # Bug Appeared. Need to investigate deeper.
+                    # Issue #2 - Error on second tclist when card is not enough to make deck
+                    for i in range(len(tclist)):
+                        if len(tclist[i]) == 1: tclist[i] = tclist[i][0]
+                    # Temp Bug Fix Part End
+                    tc_queue = Manager().Queue()
+                    process_list = []
+                    for i in range(process_make):
+                        process = Process(target=multi_appeal, args=(i+1, tc_queue, tclist[i], temp_splist, zST, difull, zLT, IDB_name, check, zMSd[1]))
+                        process_list.append(process)
+                        process.start()
+                    for process in process_list:
+                        process.join()
+                    qsize = tc_queue.qsize()
+                    while qsize > 0:
+                        iclist = iclist + tc_queue.get()
+                        qsize = qsize - 1
+                elif pypy == 1:
+                    iclist = single_appeal(tclist, temp_splist, zST, difull, zLT, 1, IDB_name, check, zMSd[1])
+                if len(iclist) != 0: break
+            
+            iclist.sort(reverse=True)
+            if len(iclist) == 0: print("Warning: IC 0")
+            if zIC != "All": iclist = iclist[0:zIC//tclen]
+            iclist2.append(iclist)
+        
         time_CDA = round(time() - start_time, 2)
         start_time_CIS = time()
 
-        sclist = list()
+        sclist2 = []
         songinfo = cur2.execute(f'select * from SongDB where songid = {zSN}').fetchone()
         songinfo_zSN = cur2.execute(f'select * from {songinfo[4]}').fetchall()[zDI-1]
         songinfo_zDI = cur2.execute(f'select abstime, track, type, bpm, duration, noteid from {songinfo[4] + str(zDI)}').fetchall()
         songinfo_zDI.sort()
 
-        if pypy == 0:
-            iclist = [iclist[(i*len(iclist))//process_make:((i+1)*len(iclist))//process_make] for i in range(process_make)]
-            ic_queue = Manager().Queue()
-            process_list = []
-            for i in range(process_make):
-                process = Process(target=multi_ideal, args=(i+1, iclist[i], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
-                process_list.append(process)
-                process.start()
-            for process in process_list:
-                process.join()
-            qsize = ic_queue.qsize()
-            while qsize > 0:
-                sclist = sclist + ic_queue.get()
-                qsize = qsize - 1
-        elif pypy == 1:
-            sclist = single_ideal(iclist, True, 1, songinfo, songinfo_zSN, songinfo_zDI, 1, IDB_name)
+        for i in range(tclen):
+            iclist = iclist2[i]
+            sclist = []
+            if pypy == 0:
+                iclist = [iclist[(i*len(iclist))//process_make:((i+1)*len(iclist))//process_make] for i in range(process_make)]
+                ic_queue = Manager().Queue()
+                process_list = []
+                for i in range(process_make):
+                    process = Process(target=multi_ideal, args=(i+1, iclist[i], ic_queue, songinfo, songinfo_zSN, songinfo_zDI, IDB_name))
+                    process_list.append(process)
+                    process.start()
+                for process in process_list:
+                    process.join()
+                qsize = ic_queue.qsize()
+                while qsize > 0:
+                    sclist = sclist + ic_queue.get()
+                    qsize = qsize - 1
+            elif pypy == 1:
+                sclist = single_ideal(iclist, songinfo, songinfo_zSN, songinfo_zDI, 1, IDB_name)
+            
+            sclist.sort(reverse=True)
+            if len(sclist) == 0: print("Warning: SC 0")
+            sclist2 = sclist2 + sclist[0:zSC//tclen]
         
-        sclist.sort(reverse=True)
-        if len(sclist) == 0: print("Warning: SC 0")
-        sclist = sclist[0:zSC]
         rslist = list()
+        sclist = sclist2
         time_CIS = round(time() - start_time_CIS, 2)
         start_time_CS = time()
 
@@ -820,10 +930,6 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
         cbxSN.bind("<<ComboboxSelected>>", update_lbPH)
         root.update()
 
-    def help_open():
-        readme_url = 'https://github.com/HyphenK/mltdkei_v3'
-        webbrowser.open(readme_url, new=1)
-
     def presets(unused_option):
         nonlocal zCB, zIC, zSC, zTC, zAH, zAR, zAS
         howto = cbxPS.get()
@@ -907,10 +1013,10 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
     txDM = Label(cvDM, text="Deck Mode", borderwidth=2, relief="groove")
     txDM.place(x=0, y=0, width=90, height=25)
 
-    DMvalues = ["All", "Songtype", "3Type", "Princess", "Fairy", "Angel"]
-    cbxDM = ttk.Combobox(cvDM, height=6, values=DMvalues, state="readonly")
+    DMvalues = ["ST+3T", "All(Legacy)", "Songtype", "3Type", "Princess", "Fairy", "Angel"]
+    cbxDM = ttk.Combobox(cvDM, height=7, values=DMvalues, state="readonly")
     cbxDM.place(x=0, y=25, width=89, height=24)
-    cbxDM.set("All")
+    cbxDM.set("ST+3T")
 
     cvDT = Frame(bcvSE)
     cvDT.place(x=370, y=50, width=90, height=50)
@@ -1160,17 +1266,6 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
         lpp = PrintScore()
         lpp.place_first(cvDKd, lpptext[i+5], 225, lppy[i])
         lpplist.append(lpp)
-
-    version = "4.19"
-    versioncheck = urlopen(github_url+"version_check").read().decode('utf-8')
-    versioncheck = findall('Version (.+)\n', versioncheck)[0]
-    if version != versioncheck: response = msgbox.askyesno("Update Avaliable",
-        f"New version is avaliable.\nCurrent Version: {version}\nNew Version: {versioncheck}\nDo you want to update now?")
-
-    try:
-        if response == 1: help_open()
-    except:
-        pass
 
     root.update()
     main_width = root.winfo_width()
