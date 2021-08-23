@@ -1,5 +1,11 @@
 # MLTD Deck Analyzer
 
+## Notice / 공지
+
+밀리시타 글로벌(한국)서버의 서비스 종료 공지에 따라, 9월 말에 업데이트가 예정된 <두근! 뱀파이어 걸> 과 <키라메키라리> 이후로는 악곡 DB 업데이트를 지원하지 않습니다.
+
+~~올해 하반기 황금 라인업 GF랑 World Changer랑 Lacrima랑 시리우스가 이렇게 날아가네~~
+
 ## Info / 정보
 
 for THE iDOLM@STER MILLION LIVE! THEATER DAYS / MLTD
