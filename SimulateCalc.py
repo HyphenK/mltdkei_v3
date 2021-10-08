@@ -1,10 +1,10 @@
 # Python Module #
 import sqlite3
-from statistics import mean
+from statistics import quantiles
 from random import random
 # mltdkei Module #
 from NewProgress import NewProgress
-# SimulateCalc for above ver.4.19 21/08/02
+# SimulateCalc for above ver.4.22 21/10/07
 
 def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
     ideal, howmany, skdict, temp_result, hdict = inputed_ideal, inputed_zTC, dict(), list(), dict()
@@ -124,9 +124,13 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
                     clpbr += 1
                     NPG.configleft(clcount, clpbr)
         else:
-            pclist = [int(2/1000*howmany), int(1/100*howmany), int(2/100*howmany),
-                      int(4/100*howmany), int(10/100*howmany), int(20/100*howmany), int(40/100*howmany), int(howmany)]
-            temp_result.append([[datafair[0]]+[(int(ayzlist[0]), int(bsalist[0]))]+[(int(mean(ayzlist[0:i])), int(mean(bsalist[0:i]))) for i in pclist]]+[datafair[1]])
+            # 0.1, 0.5, 1, 2, 5, 10, 20, 50
+            qtlist_a = quantiles(ayzlist, n=1000, method='inclusive')
+            qtlist_b = quantiles(bsalist, n=1000, method='inclusive')
+            qt_nex = [1000, 995, 990, 980, 950, 900, 800, 500]
+            qt_ex = [(int(qtlist_a[i-2]), int(qtlist_b[i-2])) for i in qt_nex]
+            qt_ex = [(int(ayzlist[0]), int(bsalist[0]))] + qt_ex
+            temp_result.append([[datafair[0]]+qt_ex]+[datafair[1]])
             NPG.configleft(clcount, clcount)
             clmpbr = 0
             NPG.configmiddle(clmpbr)

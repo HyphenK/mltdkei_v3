@@ -18,7 +18,7 @@ import SimulateCalc
 import UpdateHub
 import IdolList
 import MakeUnit
-# mltdkei_mainframe for ver.4.2 21/08/05
+# mltdkei_mainframe for ver.4.22 21/10/07
 
 def multi_appeal(work_id, result, tclist, temp_splist, zST, difull, zLT, IDB_name, check, friend):
     temp_result = AppealCalc.appeal_calculator(tclist, temp_splist, zST, difull, zLT, work_id, IDB_name, check, friend)
@@ -46,7 +46,7 @@ def multi_calculator(work_id, ntcalc, result, songinfo, songinfo_zSN, songinfo_z
 def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
     freeze_support()
     root = Tk()
-    root.title("MLTD Deck Analyzer 4.2")
+    root.title("MLTD Deck Analyzer 4.22")
     root.geometry("+80+25")
     root.resizable(False, False)
     
@@ -57,7 +57,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
         readme_url = 'https://github.com/HyphenK/mltdkei_v3'
         webbrowser.open(readme_url, new=1)
     
-    version = "4.2"
+    version = "4.22"
     try:
         versioncheck = urlopen("https://raw.githubusercontent.com/HyphenK/mltdkei_v3/v40_main/version_check").read().decode('utf-8')
         versioncheck = findall('Version (.+)\n', versioncheck)[0]
@@ -66,7 +66,7 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
                 f"""New version is avaliable.\nCurrent Version: {version}\nNew Version: {versioncheck}\nDo you want to update now?""")
             if response == 1: help_open()
     except:
-        msgbox.showerror("Internet Required", "An Internet Connection is required.")
+        msgbox.showerror("Internet Required", "Internet Connection is required to run the program.")
         exit()
 
     lb_loading.destroy()
@@ -193,7 +193,8 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
             if inputed == "zCB":
                 zCB = int(fromwhere.get())
             if inputed == "zIC":
-                zIC = fromwhere.get()
+                try: zIC = int(fromwhere.get())
+                except: zIC = fromwhere.get()
             if inputed == "zSC":
                 zSC = int(fromwhere.get())
             if inputed == "zTC":
@@ -302,14 +303,16 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
             ext_root.update()
 
         def set_leader():
+            SL_cmd = ["""select idnumber, photocode, rare, maxrank, vocal, dance, visual, centerid, skillid
+                from IdolDB natural inner join PhotoCodeDB natural inner join CenterDB natural inner join SkillDB
+                natural inner join CenterStorage where """]
+            if cbx_SLidol.get() != "All Idols": SL_cmd = SL_cmd + ['''name like "%''', cbx_SLidol.get(), '''" and ''']
             if cgtext.index(cbx_SLcenter.get()) == 0: cg = tuple([i for j in cglist for i in j])
             else: cg = tuple([0]+cglist[cgtext.index(cbx_SLcenter.get())])
             if sktext.index(cbx_SLskill.get()) == 0: sk = tuple([i for j in sklist for i in j])
             else: sk = tuple([100]+sklist[sktext.index(cbx_SLskill.get())])
-            SL = cur1.execute(f'''select idnumber, photocode, rare, maxrank, vocal, dance, visual, centerid, skillid
-                from IdolDB natural inner join PhotoCodeDB natural inner join CenterDB natural inner join SkillDB
-                natural inner join CenterStorage where name like "%{cbx_SLidol.get()}"
-                and centerid in {cg} and skillid in {sk}''').fetchall()
+            SL_cmd = SL_cmd + [f'''centerid in {cg} and skillid in {sk}''']
+            SL = cur1.execute(''.join(SL_cmd)).fetchall()
             set_leader_manual(SL)
 
         cv_extu = Label(ext_root, borderwidth=2, relief="groove")
@@ -521,10 +524,10 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
         lb_SLidol.grid(row=0, column=0, sticky=N+S)
         
         SL_idol = cur1.execute('select name from TypeStorage').fetchall()
-        SLbyidol = [SL_idol[i][0] for i in range(0, len(SL_idol))]
+        SLbyidol = ["All Idols"] + [SL_idol[i][0] for i in range(len(SL_idol))]
         cbx_SLidol = ttk.Combobox(cv_extl1, width=16, height=13, values=SLbyidol, state="readonly")
         cbx_SLidol.grid(row=0, column=1)
-        cbx_SLidol.set("Select")
+        cbx_SLidol.set("All Idols")
 
         lb_SLct = Label(cv_extl1, text=" Category ")
         lb_SLct.grid(row=0, column=2)
@@ -560,33 +563,18 @@ def mltdkei_mainframe(IDB_name, MDB_name, info_name, SongDB_name, pypy):
     ##### Definition for mltdkei_main #####
 
     def open_setting():
-        cbxST.config(state="readonly")
-        cbxDI.config(state="readonly")
-        cbxSN.config(state="readonly")
-        cbxLT.config(state="readonly")
-        cbxDM.config(state="readonly")
-        cbxDT.config(state="readonly")
-        cbxOB.config(state="readonly")
-        cbxPS.config(state="readonly")
-        bnRUN.config(state="normal")
-        bnEX.config(state="normal")
-        bnUD.config(state="normal")
-        bnUF.config(state="normal")
+        i1a = [cbxST, cbxDI, cbxSN, cbxLT, cbxDM, cbxDT, cbxOB, cbxPS]
+        i1b = [bnRUN, bnEX, bnUD, bnUF]
+        for j in i1a:
+            j.config(state="readonly")
+        for j in i1b:
+            j.config(state="normal")
         root.update()
 
     def close_setting():
-        cbxST.config(state="disabled")
-        cbxDI.config(state="disabled")
-        cbxSN.config(state="disabled")
-        cbxLT.config(state="disabled")
-        cbxDM.config(state="disabled")
-        cbxDT.config(state="disabled")
-        cbxOB.config(state="disabled")
-        cbxPS.config(state="disabled")
-        bnRUN.config(state="disabled")
-        bnEX.config(state="disabled")
-        bnUD.config(state="disabled")
-        bnUF.config(state="disabled")
+        i1 = [cbxST, cbxDI, cbxSN, cbxLT, cbxDM, cbxDT, cbxOB, cbxPS, bnRUN, bnEX, bnUD, bnUF]
+        for j in i1:
+            j.config(state="disabled")
         root.update()
 
     def mltdkei_main():

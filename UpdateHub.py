@@ -3,21 +3,21 @@ from tkinter import *
 import tkinter.ttk as ttk
 import requests
 import sqlite3
+from ssl import _create_unverified_context as makecon
 from bs4 import BeautifulSoup
 from re import findall
 from os.path import getmtime
 from urllib.request import urlopen
 from time import sleep, strftime, localtime
-# UpdateHub for above ver.3.95 21/07/02
+# UpdateHub for above ver.4.22 21/10/07 - SSL Certificate Error Fixed
 # This program uses data from matsurihi.me for making idoldata database.
-# The file update may be delayed since it is done manually. Please wait until it is made.
 
 def update_info(cls_name, IDB_name, info_name, matsuri_url):
     conn1 = sqlite3.connect(IDB_name)
     cur1 = conn1.cursor()
     namedict, extract_end = dict(), list()
 
-    webdata = urlopen(matsuri_url)
+    webdata = urlopen(matsuri_url, context=makecon())
     soup = BeautifulSoup(webdata, 'html.parser')
     soupdata = soup.find_all("a", class_="card-select")
     for i in soupdata:
@@ -52,10 +52,10 @@ def update_info(cls_name, IDB_name, info_name, matsuri_url):
 
     for idnumber in idgroup:
         webcount += 1
-        if idnumber == 1064 or idnumber == 1065:
+        if idnumber == 1064 or idnumber == 1065: # legacy chicAAmor - blank number
             cls_name.update_pbr(webcount, webcount)
             continue
-        webdata1 = urlopen(matsuri_url+str(idnumber))
+        webdata1 = urlopen(matsuri_url+str(idnumber), context=makecon())
         soup1 = BeautifulSoup(webdata1, 'html.parser')
         name = soup1.find("h1").get_text()
         namedict[idnumber] = name
@@ -246,7 +246,7 @@ def main_hub(IDB_name, MDB_name, info_name):
 
     uhb_root.update()
 
-    version_data = urlopen(github_url+"version_check").read().decode('utf-8')
+    version_data = urlopen(github_url+"version_check", context=makecon()).read().decode('utf-8')
     songdata = findall('SongData\(.+\) (.+)\n', version_data)
     idoldata = findall('IdolData\(.+\) (.+)\n', version_data)
     if IDB_name == 'mltdkei_idoldata.sqlite':
