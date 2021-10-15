@@ -1,10 +1,25 @@
 # Python Module #
 import sqlite3
-from statistics import quantiles
 from random import random
 # mltdkei Module #
 from NewProgress import NewProgress
 # SimulateCalc for above ver.4.22 21/10/07
+
+def quantiles(data, split):
+    l = len(data)
+    c = int(l/split)
+    r, rn, rs = [], [], []
+    for i in range(l):
+        rn.append(data[i])
+        if i % c == c - 1:
+            r.append(rn)
+            rn = []
+    # 0.1, 0.5, 1, 2, 5, 10, 20, 50
+    ex = [0, 1], [4, 5], [9, 10], [19, 20], [49, 50], [99, 100], [199, 200], [499, 500]
+    for i1, i2 in ex:
+        p = (r[i1][-1]+r[i2][0])//2
+        rs.append(p)
+    return rs
 
 def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songinfo_zDI, work_id, IDB_name):
     ideal, howmany, skdict, temp_result, hdict = inputed_ideal, inputed_zTC, dict(), list(), dict()
@@ -124,11 +139,9 @@ def calculator(ntcalc, inputed_ideal, inputed_zTC, songinfo, songinfo_zSN, songi
                     clpbr += 1
                     NPG.configleft(clcount, clpbr)
         else:
-            # 0.1, 0.5, 1, 2, 5, 10, 20, 50
-            qtlist_a = quantiles(ayzlist, n=1000, method='inclusive')
-            qtlist_b = quantiles(bsalist, n=1000, method='inclusive')
-            qt_nex = [1000, 995, 990, 980, 950, 900, 800, 500]
-            qt_ex = [(int(qtlist_a[i-2]), int(qtlist_b[i-2])) for i in qt_nex]
+            qtlist_a = quantiles(ayzlist, 1000)
+            qtlist_b = quantiles(bsalist, 1000)
+            qt_ex = [(int(qtlist_a[i]), int(qtlist_b[i])) for i in range(8)]
             qt_ex = [(int(ayzlist[0]), int(bsalist[0]))] + qt_ex
             temp_result.append([[datafair[0]]+qt_ex]+[datafair[1]])
             NPG.configleft(clcount, clcount)
