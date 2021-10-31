@@ -1,11 +1,5 @@
 # MLTD Deck Analyzer
 
-## Notice / 공지
-
-밀리시타 글로벌(한국)서버의 서비스 종료 공지에 따라, 9월 말에 업데이트가 예정된 <두근! 뱀파이어 걸> 과 <키라메키라리> 이후로는 악곡 DB 업데이트를 지원하지 않습니다.
-
-~~올해 하반기 황금 라인업 GF랑 World Changer랑 Lacrima랑 시리우스가 이렇게 날아가네~~
-
 ## Info / 정보
 
 for THE iDOLM@STER MILLION LIVE! THEATER DAYS / MLTD
@@ -17,20 +11,6 @@ for 아이돌 마스터 밀리언 라이브! 시어터 데이즈 / 밀리시타
 Automatic High Score Deck Making / 가장 높은 점수를 내는 덱을 찾아주는 덱 최적화 프로그램
 
 ## How to Use / 사용 방법
-
-### Update from older version / 이전 버전에서 업데이트
-
-#### Exe Version / Exe 버전에서
-
-Copy mltdkei_info.txt or mltdkei_info_kr.txt from older version folder and paste them to newer version folder. Then run Update DB > Card.
-
-기존 버전 프로그램 폴더 내부의 mltdkei_info.txt 혹은 mltdkei_info_kr.txt 를 복사해서 새로운 버전 프로그램 폴더 내부에 붙여넣어준 후 Update DB의 Card 를 실행합니다.
-
-#### pypy Version / pypy 버전에서
-
-Download code.7z, extract and change "code" folder to newer one.
-
-code.7z 파일을 내려받아 압축을 푼 후, 기존 프로그램 폴더 내부의 "code" 폴더를 새로 다운로드 받은 폴더로 교체합니다.
 
 ### Main Setting / 기본 설정
 
