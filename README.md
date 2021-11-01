@@ -58,6 +58,7 @@ This program uses data from https://mltd.matsurihi.me/cards and https://imasml-t
 
 이 프로그램은 위에 적어놓은 두 사이트의 데이터를 사용합니다.
 
-Special Thanks to megmeg_work, hiside0, Baby_Rabbit, karl**** from MLTD-KR Naver Cafe
+Idea from megmeg_work, hiside0
+Special Thanks to megmeg_work, hiside0, Baby_Rabbit, 정채여니 (https://www.twitch.tv/hhh851104/)
 
 이미지가 첨부된 한글 매뉴얼은 이쪽으로 https://gall.dcinside.com/mgallery/board/view/?id=theaterdays&no=5354535
