@@ -1,14 +1,28 @@
 # MLTD Deck Analyzer
 
-## Info / 정보
+for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD) / アイドルマスター ミリオンライブ！ シアターデイズ (ミリシタ) / 아이돌 마스터 밀리언 라이브! 시어터 데이즈 (밀리시타)
 
-for THE iDOLM@STER MILLION LIVE! THEATER DAYS / MLTD
+## Features / 할 수 있는 거
 
-for アイドルマスター ミリオンライブ！ シアターデイズ / ミリシタ
+Deck Making for Scoring / 하이스코어용 덱 최적화
 
-for 아이돌 마스터 밀리언 라이브! 시어터 데이즈 / 밀리시타
+Score Calculating / 스코어 계산
 
-Automatic High Score Deck Making / 가장 높은 점수를 내는 덱을 찾아주는 덱 최적화 프로그램
+Card Statistics / 소지 카드 현황 한눈에 보기
+
+## System Requirements / 시스템 요구 사양
+
+### Minimum Specification / 최소 사양
+
+- OS: Windows 10
+- CPU: CPU with 4 Threads / 4쓰레드 이상 CPU (셀러론 같은 거 안됨)
+- RAM: 8 GB
+
+### Recommended Specification / 권장 사양
+
+- OS: Windows 10
+- CPU: CPU with 8 Threads / 8쓰레드 이상 CPU
+- RAM: 16 GB
 
 ## How to Use / 사용 방법
 
@@ -60,5 +74,3 @@ This program uses data from https://mltd.matsurihi.me/cards and https://imasml-t
 
 Idea from megmeg_work, hiside0
 Special Thanks to megmeg_work, hiside0, Baby_Rabbit, 정채여니 (https://www.twitch.tv/hhh851104/)
-
-이미지가 첨부된 한글 매뉴얼은 이쪽으로 https://gall.dcinside.com/mgallery/board/view/?id=theaterdays&no=5354535
