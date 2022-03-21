@@ -191,11 +191,12 @@ def main_idollist(iconext, IDB_name, info_name):
                 edited_data = ",".join(inputed_data)
                 if IDB_name == 'mltdkei_idoldata.sqlite':
                     if idnumber < 1064: infodata[idnumber-1] = edited_data
-                    elif idnumber > 1065: infodata[idnumber-3] = edited_data
+                    elif 1065 < idnumber < 1444: infodata[idnumber-3] = edited_data
+                    elif 1444 < idnumber: infodata[idnumber-4] = edited_data
                 elif IDB_name == 'mltdkei_idoldata_kr.sqlite':
                     if idnumber > 9000: infodata[idnumber-9001] = edited_data
                     elif idnumber < 1064: infodata[idnumber+2] = edited_data
-                    elif idnumber > 1065: infodata[idnumber] = edited_data
+                    elif 1065 < idnumber: infodata[idnumber] = edited_data
 
             cbxhave = ttk.Combobox(scrollable_frame, height=2, width=5, values=havevalues, state="readonly")
             cbxhave.grid(row=r+1, column=c)
@@ -219,11 +220,13 @@ def main_idollist(iconext, IDB_name, info_name):
         for triple in inputed_list:
             if IDB_name == 'mltdkei_idoldata.sqlite':
                 if triple[0] < 1064: data = infodata[triple[0]-1]
-                elif triple[0] > 1065: data = infodata[triple[0]-3]
+                elif 1065 < triple[0] < 1444: data = infodata[triple[0]-3]
+                elif 1444 < triple[0]: data = infodata[triple[0]-4]
             elif IDB_name == 'mltdkei_idoldata_kr.sqlite':
                 if triple[0] > 9000: data = infodata[triple[0]-9001]
                 elif triple[0] < 1064: data = infodata[triple[0]+2]
                 elif triple[0] > 1065: data = infodata[triple[0]]
+            print(data)
             dataprint(data, triple[1], triple[2], countrow, countcol)
             countout = countout + 1
             lb_progressleft.config(text=countout)
@@ -239,7 +242,8 @@ def main_idollist(iconext, IDB_name, info_name):
             for triple in inputed_list:
                 if IDB_name == 'mltdkei_idoldata.sqlite':
                     if triple[0] < 1064: data = infodata[triple[0]-1]
-                    elif triple[0] > 1065: data = infodata[triple[0]-3]
+                    elif 1065 < triple[0] < 1444: data = infodata[triple[0]-3]
+                    elif 1444 < triple[0]: data = infodata[triple[0]-4]
                 elif IDB_name == 'mltdkei_idoldata_kr.sqlite':
                     if triple[0] > 9000: data = infodata[triple[0]-9001]
                     elif triple[0] < 1064: data = infodata[triple[0]+2]
@@ -252,8 +256,9 @@ def main_idollist(iconext, IDB_name, info_name):
                 if triple[1] <= 4 and int(data[-1]) > 10: data[-1] = '10'
                 edited_data = ",".join(data)
                 if IDB_name == 'mltdkei_idoldata.sqlite':
-                    if triple[0] < 1064: infodata[triple[0]-1] = edited_data
-                    elif triple[0] > 1065: infodata[triple[0]-3] = edited_data
+                    if triple[0] < 1064: data = infodata[triple[0]-1]
+                    elif 1065 < triple[0] < 1444: data = infodata[triple[0]-3]
+                    elif 1444 < triple[0]: data = infodata[triple[0]-4]
                 elif IDB_name == 'mltdkei_idoldata_kr.sqlite':
                     if triple[0] > 9000: infodata[triple[0]-9001] = edited_data
                     elif triple[0] < 1064: infodata[triple[0]+2] = edited_data
