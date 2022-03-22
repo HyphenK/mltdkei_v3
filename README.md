@@ -2,43 +2,65 @@
 
 for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD) / アイドルマスター ミリオンライブ！ シアターデイズ (ミリシタ) / 아이돌 마스터 밀리언 라이브! 시어터 데이즈 (밀리시타)
 
-## Features / 할 수 있는 거
+## 할 수 있는 거 (Features)
 
-Deck Making for Scoring / 하이스코어용 덱 최적화
+하이스코어용 덱 회적화 (Deck Making for Scoring)
 
-Score Calculating / 스코어 계산
+덱별 스코어 계산 (Score Calculating)
 
-Card Statistics / 소지 카드 현황 한눈에 보기
+소지 카드 현황 한눈에 보기 (Card Statistics)
 
-## System Requirements / 시스템 요구 사양
+## 시스템 요구 사항 (System Requirements)
 
-### Minimum Specification / 최소 사양
+(다른 OS에서는 테스트 안해봤습니다만 GUI 코드 때문에 안 될 가능성이 큽니다)
+
+### 최소 사양 (Minimum Specification)
 
 - OS: Windows 10
 - CPU: CPU with 4 Threads / 4쓰레드 이상 CPU (셀러론 같은 거 안됨)
 - RAM: 8 GB
 
-### Recommended Specification / 권장 사양
+### 권장 사양 (Recommended Specification)
 
 - OS: Windows 10
 - CPU: CPU with 8 Threads / 8쓰레드 이상 CPU
 - RAM: 16 GB
 
-## How to Use / 사용 방법
+## 기본 사용 방법 (How to Use - Basic)
 
-### Main Setting / 기본 설정
+### 한국어
 
-- Live Type: Select PSTheater type bonus / PSTheater(시어터) 타입 보너스 유무 결정
-- Deck Mode: Select prefered leader idol's skill type / 우선시할 리더 아이돌의 리더 스킬 결정
-  - "ST+3T" is "Songtype"+"3Type". You can compare results from two option at once. / "ST+3T"는 "Songtype"+"3Type"를 의미합니다. 각각의 옵션으로 만든 덱을 한번에 비교할 수 있습니다.
-- Deck Type: Select prefered appeal value type(between Vo, Da, Vi) / 우선시할 어필치 종류를 선택(보컬, 댄스, 비주얼 중에서)
-- Order By: Select how to order the results. You can rearrange them after calculation. / 결과 정렬 방식 결정, 계산 이후에 정렬 방법을 바꿀 수 있습니다.
-- Update DB: Update DB when there is card or song update. / 카드 혹은 수록곡 갱신 시 업데이트 가능
-  - It is recommended to update both after updating from older version or downloading first. / 이전 버전에서 업데이트 시 혹은 새로 다운로드 받은 후에 둘 다 한번은 업데이트 해 주는 것을 권장합니다.
-  - When program gets some error, try updating both file. In most case it will solve them. / 프로그램에 에러 발생 시, 두 파일을 모두 업데이트 해 보기를 권장합니다. 대부분 해결됩니다.
-- Config Idol List: Edit your current idol list / 현재 보유하고 있는 아이돌 목록을 편집
-  - You can change all of idols' status shown on window with third line of buttons. / 3번째 줄의 버튼을 이용하면, 화면에 보이는 모든 아이돌의 설정 상태를 바꿀 수 있습니다.
-  - Press save button before closing window, unless you will lose your all changes. / 창을 닫기 전에 세이브 버튼을 눌러 꼭 저장하세요. 창을 그냥 닫으면 편집된 내용이 저장되지 않습니다.
+1. DB 업데이트를 합니다. 업데이트 탭에서 파일 업데이트 유무를 확인할 수 있습니다.
+2. 가지고 있는 카드를 소지 카드 리스트에 넣어줍니다. 스코어 계산만이 목적이라면 SSR 등급과 PST SR 등급 카드만 넣어줘도 됩니다.
+3. 노래 타입과 제목, 이벤트 옵션과 덱 조합 방법, 프리셋을 설정한 후 시작 버튼을 누릅니다.
+4. 잠시 기다리면 계산 소요시간과 함께 결과가 표출됩니다. 너무 오래 걸린다면 프리셋을 낮은 단계로 바꾸거나 아래의 상세 사용 설정을 참고하여 옵션을 바꿔보세요.
+
+#### 소지 카드 리스트 편집
+
+- 원하는 옵션을 선택한 후 좌측 상단의 "Load" 버튼을 눌러 카드 리스트를 불러옵니다.
+- 편집을 마친 후에는 반드시 좌측 상단의 "Save" 버튼을 눌러 저장하시기 바랍니다. 창을 그냥 닫으면 변경 내용이 저장되지 않습니다.
+- 우측 상단 "Config All" 버튼을 눌러 화면에 나와있는 모든 아이돌 카드를 지정하는 상태로 바꿀 수 있습니다.
+- 첫번째 탭 하단 의상 항목은 선택 시 다른 옵션을 만족하는 선택된 의상의 카드만 표시됩니다.
+- 추가되었으면 하는 의상/모음집은 issue에 적어주세요. (1차 송포유 추가 예정)
+
+#### 덱 조합 방법 (옵션 이름: Deck Mode)
+
+- Songtype: 선택된 노래와 일치하는 단속성 덱 제작
+- 3Type: 트리콜 리더를 사용한 3속성 덱 제작
+- All: Songtype 옵션과 3Type 옵션을 둘 다 사용하여 덱 제작
+
+#### 프리셋 설정
+
+- Beginner: 초심자용 (SSR+ 카드 20개 이하 보유 시 권장)
+
+### English
+
+1. Update DB files. You can check at the "Update DB" tab for file updates.
+2. Configure the Idol List. If you just want to make decks, inserting only SSR and PST SR cards is enough.
+3. Select the Music Type, the Music Name, the Event Bonus, the Deck Options and the Presets, and press the Start button.
+4. The result will be shown with the time spent. If it tooks too ong time, lower the presets or change other options explained below.
+
+## 상세 설정 (Advanced Option)
 
 ### Presets Description / 프리셋
 
@@ -73,4 +95,5 @@ This program uses data from https://mltd.matsurihi.me/cards and https://imasml-t
 이 프로그램은 위에 적어놓은 두 사이트의 데이터를 사용합니다.
 
 Idea from megmeg_work, hiside0
-Special Thanks to megmeg_work, hiside0, Baby_Rabbit, 정채여니 (https://www.twitch.tv/hhh851104/)
+
+Special Thanks to Baby_Rabbit, 정채여니 (https://www.twitch.tv/hhh851104/)
