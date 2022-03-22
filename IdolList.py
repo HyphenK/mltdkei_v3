@@ -387,7 +387,7 @@ def main_idollist(iconext, IDB_name, info_name):
     ntSet.add(ntName, text="  Idol Name  ")
         
     class Settings:
-        def make_set(self, wf, name, wx, wy, amount, txt, split, default):
+        def __init__(self, wf, name, wx, wy, amount, txt, split, default):
             self.fr = Frame(wf, borderwidth=2, relief="groove")
             self.fr.grid(row=wx, column=wy, sticky="N"+"E"+"W"+"S")
             
@@ -429,47 +429,26 @@ def main_idollist(iconext, IDB_name, info_name):
             return [i.get() for i in self.var_list]
         
     # Have Section
-    set_have = Settings()
-    set_have.make_set(ntGS, "Have", 0, 0, 2, ["Have", "Non-Have"], [2], [0])
-    
+    set_have = Settings(ntGS, "Have", 0, 0, 2, ["Have", "Non-Have"], [2], [0])
     # Type Section
-    set_type = Settings()
-    set_type.make_set(ntGS, "Type", 1, 0, 4, ["Pr", "Fa", "An", "Ex"], [4], [1])
-    
+    set_type = Settings(ntGS, "Type", 1, 0, 4, ["Pr", "Fa", "An", "Ex"], [4], [1])
     # Rare Section
-    set_rare = Settings()
-    set_rare.make_set(ntGS, "Rarity", 2, 0, 4, ["SSR", "SR", "R", "N"], [4], [1])
-    
+    set_rare = Settings(ntGS, "Rarity", 2, 0, 4, ["SSR", "SR", "R", "N"], [4], [1])
     # MaxRank Section
-    set_maxr = Settings()
-    set_maxr.make_set(ntGS, "Max Master Rank", 3, 0, 2, ["★4", "★5"], [2], [0])
-    
+    set_maxr = Settings(ntGS, "Max Master Rank", 3, 0, 2, ["★4", "★5"], [2], [0])
     # Category(Kind) Section
-    set_kind = Settings()
-    set_kind.make_set(ntGS, "Category", 4, 0, 10, ["Normal", "Limited", "FES", "SHS", "PST", "Milicore", "1st", "2nd", "3rd", "4th      "], [4, 6], [1, 2, 3, 4])
-    
+    set_kind = Settings(ntGS, "Category", 4, 0, 10, ["Normal", "Limited", "FES", "SHS", "PST", "Milicore", "1st", "2nd", "3rd", "4th      "], [4, 6], [1, 2, 3, 4])
     # Clothes Section
-    set_cloth = Settings()
-    set_cloth.make_set(ntGS, "Clothes Series (Exclusive)", 5, 0, 4, ["制服シリーズ", "MILLION LIVE CLOSET!", "夏服シリーズ", "MILLION LIVE CONFERENCE!"], [1, 1, 1, 1], [])
-    
+    set_cloth = Settings(ntGS, "Clothes Series (Exclusive)", 5, 0, 4, ["制服シリーズ", "MILLION LIVE CLOSET!", "夏服シリーズ", "MILLION LIVE CONFERENCE!"], [1, 1, 1, 1], [])
     # Leader Effect (Object) Section
-    set_leaderB = Settings()
-    set_leaderB.make_set(ntSS, "Leader Effect (Object)", 0, 0, 7, ["Vocal", "Dance", "Visual", "All Up", "Life", "Skill", "No Effect"], [3, 4], [0])
-    
+    set_leaderB = Settings(ntSS, "Leader Effect (Object)", 0, 0, 7, ["Vocal", "Dance", "Visual", "All Up", "Life", "Skill", "No Effect"], [3, 4], [0])
     # Leader Effect (Type) Section
-    set_leaderT = Settings()
-    set_leaderT.make_set(ntSS, "Leader Effect (Type)", 1, 0, 5, ["Normal", "One Type", "Song Bonus", "3Type", "3Type + Skill"], [3, 2], [0])
-    
+    set_leaderT = Settings(ntSS, "Leader Effect (Type)", 1, 0, 5, ["Normal", "One Type", "Song Bonus", "3Type", "3Type + Skill"], [3, 2], [0])
     # Skill Section
-    set_skill = Settings()
-    set_skill.make_set(ntSS, "Idol Skill", 2, 0, 12, ["Score Up", "Overclock", "Combo Up", "Overrondo", "Double Boost", "Double Effect", "Multi Up", "Life Recovery", "Damage Guard", "Perfect Support", "Combo Support", "No Skill        "], [2, 2, 2, 3, 3], [0])
-    
+    set_skill = Settings(ntSS, "Idol Skill", 2, 0, 12, ["Score Up", "Overclock", "Combo Up", "Overrondo", "Double Boost", "Double Effect", "Multi Up", "Life Recovery", "Damage Guard", "Perfect Support", "Combo Support", "No Skill        "], [2, 2, 2, 3, 3], [0])
     # Cooltime Section
-    set_cool = Settings()
-    set_cool.make_set(ntSS, "Cooltime", 3, 0, 10, ["6", "7", "8", "9", "10", "11", "12", "13", "14", "0"], [5, 5], [0])
-    
+    set_cool = Settings(ntSS, "Cooltime", 3, 0, 10, ["6", "7", "8", "9", "10", "11", "12", "13", "14", "0"], [5, 5], [0])
     # Idol Section
-    set_idol = Settings()
-    set_idol.make_set(ntName, "Idol Name", 0, 0, 56, cur1.execute('select name from TypeStorage').fetchall(), [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], [0])
+    set_idol = Settings(ntName, "Idol Name", 0, 0, 56, cur1.execute('select name from TypeStorage').fetchall(), [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], [0])
 
     uil_root.mainloop()

@@ -52,7 +52,7 @@ def update_info(cls_name, IDB_name, info_name, matsuri_url):
 
     for idnumber in idgroup:
         webcount += 1
-        if idnumber == 1064 or idnumber == 1065: # legacy chicAAmor - blank number
+        if idnumber in [1064, 1065, 1444]: # legacy chicAAmor - blank number
             cls_name.update_pbr(webcount, webcount)
             continue
         webdata1 = urlopen(matsuri_url+str(idnumber), context=makecon())
