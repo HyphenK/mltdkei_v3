@@ -1,10 +1,14 @@
 # MLTD Deck Analyzer
 
-for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD) / アイドルマスター ミリオンライブ！ シアターデイズ (ミリシタ) / 아이돌 마스터 밀리언 라이브! 시어터 데이즈 (밀리시타)
+for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD)
+
+アイドルマスター ミリオンライブ！ シアターデイズ (ミリシタ)
+
+아이돌 마스터 밀리언 라이브! 시어터 데이즈 (밀리시타)
 
 ## 할 수 있는 거 (Features)
 
-하이스코어용 덱 회적화 (Deck Making for Scoring)
+하이스코어용 덱 만들기 (Deck Making for Scoring)
 
 덱별 스코어 계산 (Score Calculating)
 
@@ -52,6 +56,10 @@ for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD) / アイドルマスター 
 #### 프리셋 설정
 
 - Beginner: 초심자용 (SSR+ 카드 20개 이하 보유 시 권장)
+- Advanced
+- Expert
+- Ranker
+- Theory
 
 ### English
 
