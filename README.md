@@ -28,6 +28,10 @@ for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD)
 - CPU: CPU with 8 Threads / 8쓰레드 이상 CPU
 - RAM: 16 GB
 
+### 업데이트 시 인터넷 연결 필요 (Internet Connection Required When Updating DB Files)
+
+- 4.5 버전 이상에서는 오프라인 구동이 가능합니다.
+
 ## 기본 사용 방법 (How to Use - Basic)
 
 ### 한국어
@@ -72,40 +76,22 @@ for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD)
 3. Select the Music Type, the Music Name, the Event Bonus, the Deck Options and the Presets, and press the Start button.
 4. The result will be shown with the time spent. If it tooks too ong time, lower the presets or change other options explained below.
 
-## 상세 설정 (Advanced Option)
+## 상세 설정 방법 (Advanced Option)
 
-### Presets Description / 프리셋
+### 한국어
 
-- Beginner: For beginners who has less SSR+ cards / SSR+ 카드 소지 수가 적은 초심자용
-- Intermediate: For intermediates who has about 15 single type SSR+ cards / 15장 정도의 단일 속성 SSR+ 카드를 보유한 중급자용
-- Ranker: For rankers who has more than 100 SSR+ cards / SSR+ 카드를 100장 이상 보유한 스코어 랭킹 뛰는 랭커용
-- All Max: Suppose all of your current idols are max rank and max skill level / 현재 보유한 모든 아이돌의 능력치가 최대일 때의 결과 분석
-- Theoretical: Find the theoretical maximum score in the game / 현재 게임상에서 가능한 최상의 결과 분석
+#### 뭐더라
 
-"Ranker" is more accurate, but takes longer to analyze. / "Ranker" 쪽이 더 정확한 결과를 제공하지만, 그만큼 분석에 시간이 더 오래 걸립니다.
+#### 또 하나 더 있었는데
 
-### Advanced Setting / 고급 설정
+#### 유닛 수동 설정
 
-- Using Idols: Select the number of idols for deck building, ordered by total appeal values / 덱 구성 시에 사용할 아이돌 수 설정, 어필치 순서대로 선택됨
-  - If you get unsatisfying results, try increasing this value. / 결과가 만족스럽지 않을 경우, 이 값을 더 높은 값으로 설정해 보세요.
-- Ideal Calc: Select the number of decks for maximum score calculation, ordered by decks' total appeal values / 최상의 점수를 계산할 덱 개수 설정, 각 덱 전체의 어필치 순서대로 선택됨
-- Score Calc: Select the number of decks for real score calculation, ordered by deck's maximum score / 실제 스킬 발동 확률을 적용한 시뮬레이션을 진행할 덱 개수 설정, 각 덱의 최상의 점수 순서대로 선택됨
-- Time of Calc: Select the number of score calculation for each "Score Calc" deck / 각 "Score Calc" 덱의 시뮬레이션 횟수 설정
-- Deep Calc: Activates "Deep Calc" Mode / 정밀 분석 모드 활성화
-  - If enabled, program will select one leader idol for each of leader skill. / 활성화된 경우, 리더 스킬당 한 명의 아이돌이 각각 리더로 선택되어 계산에 활용됩니다.
-  - If disabled, program will select only one leader idol for similar leader skill group. / 비활성화된 경우, 비슷한 리더 스킬을 가진 아이돌 중 한 명만 리더로 선택됩니다.
+## 기타 사항 (Others)
 
-### Manual Leader and Friend Selection / 수동 리더, 프렌드 설정
+- 이 프로그램은 아래의 두 사이트의 데이터를 사용합니다. (This program uses data from these sites.)
+  - https://mltd.matsurihi.me/cards
+  - https://imasml-theater-wiki.gamerch.com/%E6%A5%BD%E6%9B%B2%E4%B8%80%E8%A6%A7
 
-- When the leader idol is selected, the program will ignore "Deck Mode" and "Deck Type" option and create deck by leader skill of selected leader idol. / 리더 아이돌이 선택되어 있을 경우, "Deck Mode"와 "Deck Type" 옵션을 무시하고 선택된 아이돌의 리더 스킬에 의해서만 덱이 만들어집니다.
-- Please press each "reset" button to reset each option. / 설정을 초기화하고 싶을 때는 "reset" 버튼을 눌러주세요.
+- Program Idea from megmeg_work, hiside0
 
-## Others / 기타
-
-This program uses data from https://mltd.matsurihi.me/cards and https://imasml-theater-wiki.gamerch.com/%E6%A5%BD%E6%9B%B2%E4%B8%80%E8%A6%A7
-
-이 프로그램은 위에 적어놓은 두 사이트의 데이터를 사용합니다.
-
-Idea from megmeg_work, hiside0
-
-Special Thanks to Baby_Rabbit, 정채여니 (https://www.twitch.tv/hhh851104/)
+- Special Thanks to Baby_Rabbit, 정채여니 (https://www.twitch.tv/hhh851104/)
