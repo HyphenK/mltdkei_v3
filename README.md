@@ -16,8 +16,6 @@ for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD)
 
 ## 시스템 요구 사항 (System Requirements)
 
-(다른 OS에서는 테스트 안해봤습니다만 GUI 코드 때문에 안 될 가능성이 큽니다)
-
 ### 최소 사양 (Minimum Specification)
 
 - OS: Windows 10
@@ -44,7 +42,7 @@ for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD)
 - 원하는 옵션을 선택한 후 좌측 상단의 "Load" 버튼을 눌러 카드 리스트를 불러옵니다.
 - 편집을 마친 후에는 반드시 좌측 상단의 "Save" 버튼을 눌러 저장하시기 바랍니다. 창을 그냥 닫으면 변경 내용이 저장되지 않습니다.
 - 우측 상단 "Config All" 버튼을 눌러 화면에 나와있는 모든 아이돌 카드를 지정하는 상태로 바꿀 수 있습니다.
-- 첫번째 탭 하단 의상 항목은 선택 시 다른 옵션을 만족하는 선택된 의상의 카드만 표시됩니다.
+- 첫번째 탭 하단 의상 항목은 선택 시 다른 옵션을 만족하는 **선택된 의상의 카드만 표시**됩니다.
 - 추가되었으면 하는 의상/모음집은 issue에 적어주세요. (1차 송포유 추가 예정)
 
 #### 덱 조합 방법 (옵션 이름: Deck Mode)
@@ -55,11 +53,17 @@ for THE iDOLM@STER MILLION LIVE! THEATER DAYS (MLTD)
 
 #### 프리셋 설정
 
-- Beginner: 초심자용 (SSR+ 카드 20개 이하 보유 시 권장)
-- Advanced
-- Expert
-- Ranker
-- Theory
+- Beginner: 초심자 모드 (SSR+ 카드 20개 이하 보유 시 권장)
+- Advanced: 중급자 모드 (SSR+ 카드 35개 이하 보유 시 권장)
+- Expert: 상급자 모드 (SSR+ 카드 50개 이하 보유 시 권장)
+- Ranker: 고인물/스코어랭커 모드 (SSR+ 카드 50개 이상 보유 시 권장)
+- Theory: 현재 게임에서 만들 수 있는 최상의 스코어 찾기용
+
+#### 계산 결과창
+
+- 중간 부분 탭을 눌러 계산 결과를 저장하고 다른 계산을 하거나, 이미 계산한 것을 불러올 수 있습니다. 최대 8개 저장 가능합니다.
+- 아래 부분 왼쪽에서 다른 덱 제작 결과를 확인할 수 있습니다.
+- Rearrange By 항목을 이용해 제작된 덱을 다시 정렬할 수 있습니다.
 
 ### English
 
