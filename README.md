@@ -1,5 +1,19 @@
 # MLTD Deck Analyzer
 
+## Notice / 안내
+
+업데이트 프로그램의 버그로 인해 프랄린 이후의 일부 악곡 정보에 오류가 있습니다.
+이는 다음 DB 업데이트 때 해결될 예정입니다.
+
+오류 정보
+- 마미 솔로곡에 프랄린 정보가 입력됨
+- VOY@GER에 마미 솔로곡 정보가 입력됨
+
+오류로 인해 예상되는 증상
+- 마미 솔로곡은 실제보다 점수가 낮게 계산됨
+- VOY@GER는 실제보다 점수가 높게 계산됨
+- 덱 제작에는 영향이 없음
+
 ## Info / 정보
 
 for THE iDOLM@STER MILLION LIVE! THEATER DAYS / MLTD
