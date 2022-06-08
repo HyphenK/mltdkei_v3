@@ -15,6 +15,9 @@
 - VOY@GER는 실제보다 점수가 높게 계산됨
 - 덱 제작에는 영향이 없음
 
+업데이트 서버에 사용하는 기기 변경으로 다음 DB 업데이트가 늦어질 수 있습니다.
+다음 노래 추가 때까지는 돌아오겠습니다.
+
 ## Info / 정보
 
 for THE iDOLM@STER MILLION LIVE! THEATER DAYS / MLTD
